@@ -1,1 +1,1 @@
-# LJMet-Slimmer-4tops
+# ChargedHiggs-2017 slimmer and single lepton analyzer
