@@ -1,3 +1,4 @@
+#include "BTagCalibForLJMet.cpp"
 #include "step1.cc"
 #include<vector>
 using namespace std;
@@ -18,7 +19,7 @@ void makeStep1(TString macroDir, TString inputFile, TString outputFile){
     }
 
   else {
-  	vector<TString> shifts = { "nominal", "JECup", "JECdown", "JERup", "JERdown" };
+  	vector<TString> shifts = { "nominal" };//, "JECup", "JECdown", "JERup", "JERdown" };
   	for (size_t i =0; i<shifts.size(); ++i) {
       cout << endl << "Running shift " << shifts[i] << endl;
       TString tName = "ljmet";

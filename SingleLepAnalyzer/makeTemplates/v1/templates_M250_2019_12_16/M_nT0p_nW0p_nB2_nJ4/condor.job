@@ -1,0 +1,11 @@
+universe = vanilla
+Executable = /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/SingleLepAnalyzer/makeTemplates/templates_M250_2019_12_16/M_nT0p_nW0p_nB2_nJ4/MT0pW0pB2J4JetPt.sh
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+request_memory = 3072
+Output = condor_JetPt.out
+Error = condor_JetPt.err
+Log = condor_JetPt.log
+Notification = Error
+Arguments = /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/SingleLepAnalyzer/makeTemplates/ JetPt HT 1 M 0p 0p 2 4 250
+Queue 1

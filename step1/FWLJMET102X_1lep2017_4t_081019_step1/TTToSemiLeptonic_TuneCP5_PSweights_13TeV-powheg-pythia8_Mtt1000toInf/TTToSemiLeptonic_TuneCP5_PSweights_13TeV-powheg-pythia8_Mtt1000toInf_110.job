@@ -1,0 +1,13 @@
+use_x509userproxy = true
+universe = vanilla
+Executable = /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/makeStep1brux.sh
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/makeStep1.C, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/step1.cc, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/step1.h, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/step1_cc.d, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/step1_cc.so, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/BTagCalibForLJMet.cpp, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/BTagCalibForLJMet.h, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/DeepCSV_94XSF_V4_B_F.csv
+Output = TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt1000toInf_110.out
+Error = TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt1000toInf_110.err
+Log = TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt1000toInf_110.log
+Notification = Never
+Arguments = "TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8 TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt1000toInf /store/user/lpcljm/FWLJMET102X_1lep2017_052219//TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/singleLep2017/190528_213809/0003 /mnt/hadoop/store/user/jblee/CHiggs2017/nominal//TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt1000toInf '3210 3211 3212 3213 3214 3215 3216 3217 3218 3219 3220 3221 3222 3223 3224 3225 3226 3227 3228 3229 3230 3231 3232 3233 3234 3235 3236 3237 3238 3239' 110"
+
+Queue 1

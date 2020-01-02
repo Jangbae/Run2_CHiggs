@@ -1,0 +1,13 @@
+use_x509userproxy = true
+universe = vanilla
+Executable = /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/makeStep1brux.sh
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/makeStep1.C, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/step1.cc, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/step1.h, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/step1_cc.d, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/step1_cc.so, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/BTagCalibForLJMet.cpp, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/BTagCalibForLJMet.h, /user_data/jlee/chargedHiggs/2017Data/CMSSW_10_2_10/src/step1/DeepCSV_94XSF_V4_B_F.csv
+Output = TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt0to700_14.out
+Error = TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt0to700_14.err
+Log = TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt0to700_14.log
+Notification = Never
+Arguments = "TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8 TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt0to700 /store/user/lpcljm/FWLJMET102X_1lep2017_052219//TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8/singleLep2017/190529_173524/0000 /mnt/hadoop/store/user/jblee/CHiggs2017/nominal//TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8_Mtt0to700 '450 451 452 453 454 455 456 457 458 459 46 460 461 462 463 464 465 466 467 468 469 47 470 471 472 473 474 475 476 477' 14"
+
+Queue 1

@@ -46,7 +46,8 @@ ls -l *.root
 
 NOM="nominal"
 echo "cp output for condor"
-for SHIFT in nominal JECup JECdown JERup JERdown
+#for SHIFT in nominal JECup JECdown JERup JERdown
+for SHIFT in nominal
   do
   haddFile=${outfilename}_${ID}${SHIFT}_hadd.root
   hadd ${haddFile} *${SHIFT}.root

@@ -49,7 +49,9 @@ public :
    Bool_t          isTTincMtt1000toInf;
    Int_t           SigMass;
    Int_t           pileupIndex;
-
+   Bool_t          isNOMshift;
+   Bool_t          isJECshift;
+   Bool_t          isJERshift;
    // Pileup distributions -- 31Mar2018 Data vs RunIIFall17MC
    std::vector<std::vector<float>> pileupweight;
    std::vector<std::vector<float>> pileupweightUp;
@@ -58,6 +60,78 @@ public :
    // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // NEW BRANCHES
+   float CalibReaderRewgt;
+   float CalibReaderRewgt_JESup;
+   float CalibReaderRewgt_JESdn;
+   float CalibReaderRewgt_LFup;
+   float CalibReaderRewgt_LFdn;
+   float CalibReaderRewgt_HFstat1up;
+   float CalibReaderRewgt_HFstat1dn;
+   float CalibReaderRewgt_HFstat2up;
+   float CalibReaderRewgt_HFstat2dn;
+   float CalibReaderRewgt_CFerr1up;
+   float CalibReaderRewgt_CFerr1dn;
+   float CalibReaderRewgt_CFerr2up;
+   float CalibReaderRewgt_CFerr2dn;
+   float CalibReaderRewgt_HFup;
+   float CalibReaderRewgt_HFdn;
+   float CalibReaderRewgt_LFstat1up;
+   float CalibReaderRewgt_LFstat1dn;
+   float CalibReaderRewgt_LFstat2up;
+   float CalibReaderRewgt_LFstat2dn;
+
+   float CalibReaderRewgt_JESAbsoluteMPFBiasup;
+   float CalibReaderRewgt_JESAbsoluteMPFBiasdn;
+   float CalibReaderRewgt_JESAbsoluteScaleup;
+   float CalibReaderRewgt_JESAbsoluteScaledn;
+   float CalibReaderRewgt_JESAbsoluteStatup;
+   float CalibReaderRewgt_JESAbsoluteStatdn;
+   float CalibReaderRewgt_JESFlavorQCDup;
+   float CalibReaderRewgt_JESFlavorQCDdn;
+   float CalibReaderRewgt_JESFragmentationup;
+   float CalibReaderRewgt_JESFragmentationdn;
+   float CalibReaderRewgt_JESPileUpDataMCup;
+   float CalibReaderRewgt_JESPileUpDataMCdn;
+   float CalibReaderRewgt_JESPileUpPtBBup;
+   float CalibReaderRewgt_JESPileUpPtBBdn;
+   float CalibReaderRewgt_JESPileUpPtEC1up;
+   float CalibReaderRewgt_JESPileUpPtEC1dn;
+   float CalibReaderRewgt_JESPileUpPtEC2up;
+   float CalibReaderRewgt_JESPileUpPtEC2dn;
+   float CalibReaderRewgt_JESPileUpPtHFup;
+   float CalibReaderRewgt_JESPileUpPtHFdn;
+   float CalibReaderRewgt_JESPileUpPtRefup;
+   float CalibReaderRewgt_JESPileUpPtRefdn;
+   float CalibReaderRewgt_JESRelativeBalup;
+   float CalibReaderRewgt_JESRelativeBaldn;
+   float CalibReaderRewgt_JESRelativeFSRup;
+   float CalibReaderRewgt_JESRelativeFSRdn;
+   float CalibReaderRewgt_JESRelativeJEREC1up;
+   float CalibReaderRewgt_JESRelativeJEREC1dn;
+   float CalibReaderRewgt_JESRelativeJEREC2up;
+   float CalibReaderRewgt_JESRelativeJEREC2dn;
+   float CalibReaderRewgt_JESRelativeJERHFup;
+   float CalibReaderRewgt_JESRelativeJERHFdn;
+   float CalibReaderRewgt_JESRelativePtBBup;
+   float CalibReaderRewgt_JESRelativePtBBdn;
+   float CalibReaderRewgt_JESRelativePtEC1up;
+   float CalibReaderRewgt_JESRelativePtEC1dn;
+   float CalibReaderRewgt_JESRelativePtEC2up;
+   float CalibReaderRewgt_JESRelativePtEC2dn;
+   float CalibReaderRewgt_JESRelativePtHFup;
+   float CalibReaderRewgt_JESRelativePtHFdn;
+   float CalibReaderRewgt_JESRelativeStatECup;
+   float CalibReaderRewgt_JESRelativeStatECdn;
+   float CalibReaderRewgt_JESRelativeStatFSRup;
+   float CalibReaderRewgt_JESRelativeStatFSRdn;
+   float CalibReaderRewgt_JESRelativeStatHFup;
+   float CalibReaderRewgt_JESRelativeStatHFdn;
+   float CalibReaderRewgt_JESSinglePionECALup;
+   float CalibReaderRewgt_JESSinglePionECALdn;
+   float CalibReaderRewgt_JESSinglePionHCALup;
+   float CalibReaderRewgt_JESSinglePionHCALdn;
+   float CalibReaderRewgt_JESTimePtEtaup;
+   float CalibReaderRewgt_JESTimePtEtadn; 
    Int_t           isHTgt500Njetge9;
    Int_t           isElectron;
    Int_t           isMuon;
@@ -1221,6 +1295,10 @@ step1::step1(TString inputFileName, TString outputFileName) : inputTree(0), inpu
   isSE = (inputFileName.Contains("SingleElectron") || inputFileName.Contains("EGamma"));
 
   isSig  = (inputFileName.Contains("prime") || inputFileName.Contains("X53") || inputFileName.Contains("ChargedHiggs_Hplus"));
+  isNOMshift = outputFileName.Contains("nominal");
+  isJECshift = outputFileName.Contains("JEC");
+  isJERshift = outputFileName.Contains("JER");
+
   if(isSig){
     if(inputFileName.Contains("Bprime")){
       if(inputFileName.Contains("_M-900")) {SigMass = 2; pileupIndex = 44;}

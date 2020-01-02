@@ -14,6 +14,7 @@
 #include <vector>
 #include <TH3.h>
 
+#include "BTagCalibForLJMet.h"
 using namespace std;
 
 // ----------------------------------------------------------------------------
@@ -76,6 +77,56 @@ wgthist->Write();
 
 void step1::Loop(TString inTreeName, TString outTreeName ) 
 {
+
+  // setup calibration + reader
+  BTagCalibrationForLJMet calib("deepcsv", "DeepCSV_94XSF_V4_B_F.csv");
+  BTagCalibrationForLJMetReader reader(BTagEntryForLJMet::OP_RESHAPING,  // operating point
+			       "central",             // central sys type
+			       {
+                    "down_cferr1", "up_cferr1",
+                    "down_cferr2", "up_cferr2",
+                    "down_hf", "up_hf",
+                    "down_hfstats1", "up_hfstats1",
+                    "down_hfstats2", "up_hfstats2",
+                    "down_jes", "up_jes",
+                    "down_jesAbsoluteMPFBias", "up_jesAbsoluteMPFBias",
+                    "down_jesAbsoluteScale", "up_jesAbsoluteScale",
+                    "down_jesAbsoluteStat", "up_jesAbsoluteStat",
+                    "down_jesFlavorQCD", "up_jesFlavorQCD",
+                    "down_jesFragmentation", "up_jesFragmentation",
+                    "down_jesPileUpDataMC", "up_jesPileUpDataMC",
+                    "down_jesPileUpPtBB", "up_jesPileUpPtBB",
+                    "down_jesPileUpPtEC1", "up_jesPileUpPtEC1",
+                    "down_jesPileUpPtEC2", "up_jesPileUpPtEC2",
+                    "down_jesPileUpPtHF", "up_jesPileUpPtHF",
+                    "down_jesPileUpPtRef", "up_jesPileUpPtRef",
+                    "down_jesRelativeBal", "up_jesRelativeBal",
+                    "down_jesRelativeFSR", "up_jesRelativeFSR",
+                    "down_jesRelativeJEREC1", "up_jesRelativeJEREC1",
+                    "down_jesRelativeJEREC2", "up_jesRelativeJEREC2",
+                    "down_jesRelativeJERHF", "up_jesRelativeJERHF",
+                    "down_jesRelativePtBB", "up_jesRelativePtBB",
+                    "down_jesRelativePtEC1", "up_jesRelativePtEC1",
+                    "down_jesRelativePtEC2", "up_jesRelativePtEC2",
+                    "down_jesRelativePtHF", "up_jesRelativePtHF",
+                    "down_jesRelativeStatEC", "up_jesRelativeStatEC",
+                    "down_jesRelativeStatFSR", "up_jesRelativeStatFSR",
+                    "down_jesRelativeStatHF", "up_jesRelativeStatHF",
+                    "down_jesSinglePionECAL", "up_jesSinglePionECAL",
+                    "down_jesSinglePionHCAL", "up_jesSinglePionHCAL",
+                    "down_jesTimePtEta", "up_jesTimePtEta",
+                    "down_lf", "up_lf",
+                    "down_lfstats1", "up_lfstats1",
+                    "down_lfstats2", "up_lfstats2"				   
+				   }
+				   );      // other sys types
+  //C-only: cferr*. L-only: hf, lfstats*. B-only: lf, hfstats*
+  
+  reader.load(calib,                 // calibration instance
+	      BTagEntryForLJMet::FLAV_B,     // btag flavour
+	      "iterativefit");       // measurement type
+  reader.load(calib, BTagEntryForLJMet::FLAV_C, "iterativefit");     // for FLAV_C
+  reader.load(calib, BTagEntryForLJMet::FLAV_UDSG, "iterativefit");     // for FLAV_UDSG
   
   // ----------------------------------------------------------------------------
   // Turn on input tree branches
@@ -187,38 +238,11 @@ void step1::Loop(TString inTreeName, TString outTreeName )
    inputTree->SetBranchStatus("theJetDeepCSVbb_JetSubCalc",1);
    inputTree->SetBranchStatus("theJetDeepCSVc_JetSubCalc",1);
    inputTree->SetBranchStatus("theJetDeepCSVudsg_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8DoubleB_JetSubCalc",1);
    inputTree->SetBranchStatus("theJetBTag_bSFup_JetSubCalc",1);
    inputTree->SetBranchStatus("theJetBTag_bSFdn_JetSubCalc",1);
    inputTree->SetBranchStatus("theJetBTag_lSFup_JetSubCalc",1);
    inputTree->SetBranchStatus("theJetBTag_lSFdn_JetSubCalc",1);
    inputTree->SetBranchStatus("theJetBTag_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8Pt_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8Eta_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8Phi_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8Mass_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8Energy_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8NjettinessTau1_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8NjettinessTau2_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8NjettinessTau3_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8CHSTau1_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8CHSTau2_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8CHSTau3_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8CHSPrunedMass_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8CHSSoftDropMass_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SoftDropRaw_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SoftDropCorr_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SoftDrop_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SoftDrop_JMSup_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SoftDrop_JMSdn_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SoftDrop_JMRup_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SoftDrop_JMRdn_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SDSubjetNDeepCSVMSF_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SDSubjetNDeepCSVL_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SDSubjetHFlav_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SDSubjetIndex_JetSubCalc",1);
-   inputTree->SetBranchStatus("theJetAK8SDSubjetSize_JetSubCalc",1);
-   inputTree->SetBranchStatus("maxProb_JetSubCalc",1);
    
    //top
    inputTree->SetBranchStatus("ttbarMass_TTbarMassCalc",1);
@@ -235,6 +259,8 @@ void step1::Loop(TString inTreeName, TString outTreeName )
    inputTree->SetBranchStatus("allTopsPt_TTbarMassCalc",1);
    inputTree->SetBranchStatus("allTopsID_TTbarMassCalc",1);
    inputTree->SetBranchStatus("allTopsStatus_TTbarMassCalc",1);
+
+   inputTree->SetBranchStatus("genTtbarIdCategory_TTbarMassCalc",1);
 
    //top W
    inputTree->SetBranchStatus("topWEnergy_TTbarMassCalc",1);
@@ -316,22 +342,12 @@ void step1::Loop(TString inTreeName, TString outTreeName )
    outputTree->Branch("ttbarMass_TTbarMassCalc",&ttbarMass_TTbarMassCalc,"ttbarMass_TTbarMassCalc/D");
    outputTree->Branch("genTopPt",&genTopPt,"genTopPt/F");
    outputTree->Branch("genAntiTopPt",&genAntiTopPt,"genAntiTopPt/F");
-//    outputTree->Branch("topEnergy_TTbarMassCalc",&topEnergy_TTbarMassCalc);
-//    outputTree->Branch("topEta_TTbarMassCalc",&topEta_TTbarMassCalc);
-//    outputTree->Branch("topMass_TTbarMassCalc",&topMass_TTbarMassCalc);
-//    outputTree->Branch("topPhi_TTbarMassCalc",&topPhi_TTbarMassCalc);   
-//    outputTree->Branch("topPt_TTbarMassCalc",&topPt_TTbarMassCalc);      
-//    outputTree->Branch("topID_TTbarMassCalc",&topID_TTbarMassCalc);
-//    outputTree->Branch("topWEnergy_TTbarMassCalc",&topWEnergy_TTbarMassCalc);
-//    outputTree->Branch("topWEta_TTbarMassCalc",&topWEta_TTbarMassCalc);
-//    outputTree->Branch("topWPhi_TTbarMassCalc",&topWPhi_TTbarMassCalc);
-//    outputTree->Branch("topWPt_TTbarMassCalc",&topWPt_TTbarMassCalc);   
-//    outputTree->Branch("topWID_TTbarMassCalc",&topWID_TTbarMassCalc);      
-//    outputTree->Branch("topbEnergy_TTbarMassCalc",&topbEnergy_TTbarMassCalc);
-//    outputTree->Branch("topbEta_TTbarMassCalc",&topbEta_TTbarMassCalc);
-//    outputTree->Branch("topbPhi_TTbarMassCalc",&topbPhi_TTbarMassCalc);
-//    outputTree->Branch("topbPt_TTbarMassCalc",&topbPt_TTbarMassCalc);   
-//    outputTree->Branch("topbID_TTbarMassCalc",&topbID_TTbarMassCalc);
+   outputTree->Branch("topEnergy_TTbarMassCalc",&topEnergy_TTbarMassCalc);
+   outputTree->Branch("topEta_TTbarMassCalc",&topEta_TTbarMassCalc);
+   outputTree->Branch("topMass_TTbarMassCalc",&topMass_TTbarMassCalc);
+   outputTree->Branch("topPhi_TTbarMassCalc",&topPhi_TTbarMassCalc);   
+   outputTree->Branch("topPt_TTbarMassCalc",&topPt_TTbarMassCalc);      
+   outputTree->Branch("topID_TTbarMassCalc",&topID_TTbarMassCalc);
    
    //leptons
    outputTree->Branch("corr_met_MultiLepCalc",&corr_met_MultiLepCalc,"corr_met_MultiLepCalc/D");
@@ -417,52 +433,91 @@ void step1::Loop(TString inTreeName, TString outTreeName )
    outputTree->Branch("HadronicVHtEta_JetSubCalc",&HadronicVHtEta_JetSubCalc);
    outputTree->Branch("HadronicVHtPhi_JetSubCalc",&HadronicVHtPhi_JetSubCalc);
    outputTree->Branch("HadronicVHtEnergy_JetSubCalc",&HadronicVHtEnergy_JetSubCalc);
-   outputTree->Branch("theJetAK8Wmatch_JetSubCalc_PtOrdered",&theJetAK8Wmatch_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8Tmatch_JetSubCalc_PtOrdered",&theJetAK8Tmatch_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8Zmatch_JetSubCalc_PtOrdered",&theJetAK8Zmatch_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8Hmatch_JetSubCalc_PtOrdered",&theJetAK8Hmatch_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8MatchedPt_JetSubCalc_PtOrdered",&theJetAK8MatchedPt_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8Truth_JetSubCalc_PtOrdered",&theJetAK8Truth_JetSubCalc_PtOrdered);
 
-   // AK8
-   outputTree->Branch("NJetsAK8_JetSubCalc",&NJetsAK8_JetSubCalc,"NJetsAK8_JetSubCalc/I");
-   outputTree->Branch("theJetAK8Pt_JetSubCalc_PtOrdered",&theJetAK8Pt_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8Eta_JetSubCalc_PtOrdered",&theJetAK8Eta_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8Phi_JetSubCalc_PtOrdered",&theJetAK8Phi_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8Mass_JetSubCalc_PtOrdered",&theJetAK8Mass_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8Energy_JetSubCalc_PtOrdered",&theJetAK8Energy_JetSubCalc_PtOrdered);
-   outputTree->Branch("minDR_leadAK8otherAK8",&minDR_leadAK8otherAK8,"minDR_leadAK8otherAK8/F");
-   outputTree->Branch("minDR_lepAK8",&minDR_lepAK8,"minDR_lepAK8/F");
-   outputTree->Branch("ptRel_lepAK8",&ptRel_lepAK8,"ptRel_lepAK8/F");
-   outputTree->Branch("deltaR_lepAK8s",&deltaR_lepAK8s);
+   outputTree->Branch("isHTgt500Njetge9",&isHTgt500Njetge9,"isHTgt500Njetge9/I");
+   outputTree->Branch("BJetLeadPt",&BJetLeadPt,"BJetLeadPt/F");
+   outputTree->Branch("BJetLeadPt_bSFup",&BJetLeadPt_bSFup,"BJetLeadPt_bSFup/F");
+   outputTree->Branch("BJetLeadPt_bSFdn",&BJetLeadPt_bSFdn,"BJetLeadPt_bSFdn/F");
+   outputTree->Branch("BJetLeadPt_lSFup",&BJetLeadPt_lSFup,"BJetLeadPt_lSFup/F");
+   outputTree->Branch("BJetLeadPt_lSFdn",&BJetLeadPt_lSFdn,"BJetLeadPt_lSFdn/F");
+   outputTree->Branch("WJetLeadPt",&WJetLeadPt,"WJetLeadPt/F");
+   outputTree->Branch("TJetLeadPt",&TJetLeadPt,"TJetLeadPt/F"); 
 
-   // mass + tau tagging
-   outputTree->Branch("maxProb_JetSubCalc_PtOrdered",&maxProb_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8CHSPrunedMass_JetSubCalc_PtOrdered",&theJetAK8CHSPrunedMass_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8CHSSoftDropMass_JetSubCalc_PtOrdered",&theJetAK8CHSSoftDropMass_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8SoftDropRaw_JetSubCalc_PtOrdered",&theJetAK8SoftDropRaw_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8SoftDropCorr_JetSubCalc_PtOrdered",&theJetAK8SoftDropCorr_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8DoubleB_JetSubCalc_PtOrdered",&theJetAK8DoubleB_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8SoftDrop_JetSubCalc_PtOrdered",&theJetAK8SoftDrop_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8SoftDrop_JetSubCalc_JMRup_PtOrdered",&theJetAK8SoftDrop_JetSubCalc_JMRup_PtOrdered);
-   outputTree->Branch("theJetAK8SoftDrop_JetSubCalc_JMRdn_PtOrdered",&theJetAK8SoftDrop_JetSubCalc_JMRdn_PtOrdered);
-   outputTree->Branch("theJetAK8SoftDrop_JetSubCalc_JMSup_PtOrdered",&theJetAK8SoftDrop_JetSubCalc_JMSup_PtOrdered);
-   outputTree->Branch("theJetAK8SoftDrop_JetSubCalc_JMSdn_PtOrdered",&theJetAK8SoftDrop_JetSubCalc_JMSdn_PtOrdered);
-   outputTree->Branch("theJetAK8NjettinessTau1_JetSubCalc_PtOrdered",&theJetAK8NjettinessTau1_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8NjettinessTau2_JetSubCalc_PtOrdered",&theJetAK8NjettinessTau2_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8NjettinessTau3_JetSubCalc_PtOrdered",&theJetAK8NjettinessTau3_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8CHSTau1_JetSubCalc_PtOrdered",&theJetAK8CHSTau1_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8CHSTau2_JetSubCalc_PtOrdered",&theJetAK8CHSTau2_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8CHSTau3_JetSubCalc_PtOrdered",&theJetAK8CHSTau3_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8SDSubjetIndex_JetSubCalc_PtOrdered",&theJetAK8SDSubjetIndex_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8SDSubjetSize_JetSubCalc_PtOrdered",&theJetAK8SDSubjetSize_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8SDSubjetNDeepCSVMSF_JetSubCalc_PtOrdered",&theJetAK8SDSubjetNDeepCSVMSF_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8SDSubjetNDeepCSVL_JetSubCalc_PtOrdered",&theJetAK8SDSubjetNDeepCSVL_JetSubCalc_PtOrdered);
-   outputTree->Branch("theJetAK8Indx_Wtagged",&theJetAK8Indx_Wtagged);
-   outputTree->Branch("NJetsWtagged",&NJetsWtagged,"NJetsWtagged/I");
-   outputTree->Branch("NJetsWtagged_shifts",&NJetsWtagged_shifts);
-   outputTree->Branch("NJetsTtagged",&NJetsTtagged,"NJetsTtagged/I");
-   outputTree->Branch("NJetsTtagged_shifts",&NJetsTtagged_shifts);
+   outputTree->Branch("genTtbarIdCategory_TTbarMassCalc",&genTtbarIdCategory_TTbarMassCalc);    
+
+   //B-tag calibration reweight for SF
+   outputTree->Branch("CalibReaderRewgt",&CalibReaderRewgt,"CalibReaderRewgt/F");
+   outputTree->Branch("CalibReaderRewgt_JESup",&CalibReaderRewgt_JESup,"CalibReaderRewgt_JESup/F");
+   outputTree->Branch("CalibReaderRewgt_JESdn",&CalibReaderRewgt_JESdn,"CalibReaderRewgt_JESdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESAbsoluteMPFBiasup",&CalibReaderRewgt_JESAbsoluteMPFBiasup,"CalibReaderRewgt_JESAbsoluteMPFBiasup/F");
+   outputTree->Branch("CalibReaderRewgt_JESAbsoluteMPFBiasdn",&CalibReaderRewgt_JESAbsoluteMPFBiasdn,"CalibReaderRewgt_JESAbsoluteMPFBiasdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESAbsoluteScaleup",&CalibReaderRewgt_JESAbsoluteScaleup,"CalibReaderRewgt_JESAbsoluteScaleup/F");
+   outputTree->Branch("CalibReaderRewgt_JESAbsoluteScaledn",&CalibReaderRewgt_JESAbsoluteScaledn,"CalibReaderRewgt_JESAbsoluteScaledn/F");
+   outputTree->Branch("CalibReaderRewgt_JESAbsoluteStatup",&CalibReaderRewgt_JESAbsoluteStatup,"CalibReaderRewgt_JESAbsoluteStatup/F");
+   outputTree->Branch("CalibReaderRewgt_JESAbsoluteStatdn",&CalibReaderRewgt_JESAbsoluteStatdn,"CalibReaderRewgt_JESAbsoluteStatdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESFlavorQCDup",&CalibReaderRewgt_JESFlavorQCDup,"CalibReaderRewgt_JESFlavorQCDup/F");
+   outputTree->Branch("CalibReaderRewgt_JESFlavorQCDdn",&CalibReaderRewgt_JESFlavorQCDdn,"CalibReaderRewgt_JESFlavorQCDdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESFragmentationup",&CalibReaderRewgt_JESFragmentationup,"CalibReaderRewgt_JESFragmentationup/F");
+   outputTree->Branch("CalibReaderRewgt_JESFragmentationdn",&CalibReaderRewgt_JESFragmentationdn,"CalibReaderRewgt_JESFragmentationdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpDataMCup",&CalibReaderRewgt_JESPileUpDataMCup,"CalibReaderRewgt_JESPileUpDataMCup/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpDataMCdn",&CalibReaderRewgt_JESPileUpDataMCdn,"CalibReaderRewgt_JESPileUpDataMCdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtBBup",&CalibReaderRewgt_JESPileUpPtBBup,"CalibReaderRewgt_JESPileUpPtBBup/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtBBdn",&CalibReaderRewgt_JESPileUpPtBBdn,"CalibReaderRewgt_JESPileUpPtBBdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtEC1up",&CalibReaderRewgt_JESPileUpPtEC1up,"CalibReaderRewgt_JESPileUpPtEC1up/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtEC1dn",&CalibReaderRewgt_JESPileUpPtEC1dn,"CalibReaderRewgt_JESPileUpPtEC1dn/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtEC2up",&CalibReaderRewgt_JESPileUpPtEC2up,"CalibReaderRewgt_JESPileUpPtEC2up/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtEC2dn",&CalibReaderRewgt_JESPileUpPtEC2dn,"CalibReaderRewgt_JESPileUpPtEC2dn/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtHFup",&CalibReaderRewgt_JESPileUpPtHFup,"CalibReaderRewgt_JESPileUpPtHFup/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtHFdn",&CalibReaderRewgt_JESPileUpPtHFdn,"CalibReaderRewgt_JESPileUpPtHFdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtRefup",&CalibReaderRewgt_JESPileUpPtRefup,"CalibReaderRewgt_JESPileUpPtRefup/F");
+   outputTree->Branch("CalibReaderRewgt_JESPileUpPtRefdn",&CalibReaderRewgt_JESPileUpPtRefdn,"CalibReaderRewgt_JESPileUpPtRefdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeBalup",&CalibReaderRewgt_JESRelativeBalup,"CalibReaderRewgt_JESRelativeBalup/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeBaldn",&CalibReaderRewgt_JESRelativeBaldn,"CalibReaderRewgt_JESRelativeBaldn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeFSRup",&CalibReaderRewgt_JESRelativeFSRup,"CalibReaderRewgt_JESRelativeFSRup/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeFSRdn",&CalibReaderRewgt_JESRelativeFSRdn,"CalibReaderRewgt_JESRelativeFSRdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeJEREC1up",&CalibReaderRewgt_JESRelativeJEREC1up,"CalibReaderRewgt_JESRelativeJEREC1up/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeJEREC1dn",&CalibReaderRewgt_JESRelativeJEREC1dn,"CalibReaderRewgt_JESRelativeJEREC1dn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeJEREC2up",&CalibReaderRewgt_JESRelativeJEREC2up,"CalibReaderRewgt_JESRelativeJEREC2up/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeJEREC2dn",&CalibReaderRewgt_JESRelativeJEREC2dn,"CalibReaderRewgt_JESRelativeJEREC2dn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeJERHFup",&CalibReaderRewgt_JESRelativeJERHFup,"CalibReaderRewgt_JESRelativeJERHFup/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeJERHFdn",&CalibReaderRewgt_JESRelativeJERHFdn,"CalibReaderRewgt_JESRelativeJERHFdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativePtBBup",&CalibReaderRewgt_JESRelativePtBBup,"CalibReaderRewgt_JESRelativePtBBup/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativePtBBdn",&CalibReaderRewgt_JESRelativePtBBdn,"CalibReaderRewgt_JESRelativePtBBdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativePtEC1up",&CalibReaderRewgt_JESRelativePtEC1up,"CalibReaderRewgt_JESRelativePtEC1up/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativePtEC1dn",&CalibReaderRewgt_JESRelativePtEC1dn,"CalibReaderRewgt_JESRelativePtEC1dn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativePtEC2up",&CalibReaderRewgt_JESRelativePtEC2up,"CalibReaderRewgt_JESRelativePtEC2up/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativePtEC2dn",&CalibReaderRewgt_JESRelativePtEC2dn,"CalibReaderRewgt_JESRelativePtEC2dn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativePtHFup",&CalibReaderRewgt_JESRelativePtHFup,"CalibReaderRewgt_JESRelativePtHFup/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativePtHFdn",&CalibReaderRewgt_JESRelativePtHFdn,"CalibReaderRewgt_JESRelativePtHFdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeStatECup",&CalibReaderRewgt_JESRelativeStatECup,"CalibReaderRewgt_JESRelativeStatECup/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeStatECdn",&CalibReaderRewgt_JESRelativeStatECdn,"CalibReaderRewgt_JESRelativeStatECdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeStatFSRup",&CalibReaderRewgt_JESRelativeStatFSRup,"CalibReaderRewgt_JESRelativeStatFSRup/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeStatFSRdn",&CalibReaderRewgt_JESRelativeStatFSRdn,"CalibReaderRewgt_JESRelativeStatFSRdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeStatHFup",&CalibReaderRewgt_JESRelativeStatHFup,"CalibReaderRewgt_JESRelativeStatHFup/F");
+   outputTree->Branch("CalibReaderRewgt_JESRelativeStatHFdn",&CalibReaderRewgt_JESRelativeStatHFdn,"CalibReaderRewgt_JESRelativeStatHFdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESSinglePionECALup",&CalibReaderRewgt_JESSinglePionECALup,"CalibReaderRewgt_JESSinglePionECALup/F");
+   outputTree->Branch("CalibReaderRewgt_JESSinglePionECALdn",&CalibReaderRewgt_JESSinglePionECALdn,"CalibReaderRewgt_JESSinglePionECALdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESSinglePionHCALup",&CalibReaderRewgt_JESSinglePionHCALup,"CalibReaderRewgt_JESSinglePionHCALup/F");
+   outputTree->Branch("CalibReaderRewgt_JESSinglePionHCALdn",&CalibReaderRewgt_JESSinglePionHCALdn,"CalibReaderRewgt_JESSinglePionHCALdn/F");
+   outputTree->Branch("CalibReaderRewgt_JESTimePtEtaup",&CalibReaderRewgt_JESTimePtEtaup,"CalibReaderRewgt_JESTimePtEtaup/F");
+   outputTree->Branch("CalibReaderRewgt_JESTimePtEtadn",&CalibReaderRewgt_JESTimePtEtadn,"CalibReaderRewgt_JESTimePtEtadn/F");
+
+   outputTree->Branch("CalibReaderRewgt_LFup",&CalibReaderRewgt_LFup,"CalibReaderRewgt_LFup/F");
+   outputTree->Branch("CalibReaderRewgt_LFdn",&CalibReaderRewgt_LFdn,"CalibReaderRewgt_LFdn/F");
+   outputTree->Branch("CalibReaderRewgt_HFstat1up",&CalibReaderRewgt_HFstat1up,"CalibReaderRewgt_HFstat1up/F");
+   outputTree->Branch("CalibReaderRewgt_HFstat1dn",&CalibReaderRewgt_HFstat1dn,"CalibReaderRewgt_HFstat1dn/F");
+   outputTree->Branch("CalibReaderRewgt_HFstat2up",&CalibReaderRewgt_HFstat2up,"CalibReaderRewgt_HFstat2up/F");
+   outputTree->Branch("CalibReaderRewgt_HFstat2dn",&CalibReaderRewgt_HFstat2dn,"CalibReaderRewgt_HFstat2dn/F");
+   outputTree->Branch("CalibReaderRewgt_CFerr1up",&CalibReaderRewgt_CFerr1up,"CalibReaderRewgt_CFerr1up/F");
+   outputTree->Branch("CalibReaderRewgt_CFerr1dn",&CalibReaderRewgt_CFerr1dn,"CalibReaderRewgt_CFerr1dn/F");
+   outputTree->Branch("CalibReaderRewgt_CFerr2up",&CalibReaderRewgt_CFerr2up,"CalibReaderRewgt_CFerr2up/F");
+   outputTree->Branch("CalibReaderRewgt_CFerr2dn",&CalibReaderRewgt_CFerr2dn,"CalibReaderRewgt_CFerr2dn/F");
+   outputTree->Branch("CalibReaderRewgt_HFup",&CalibReaderRewgt_HFup,"CalibReaderRewgt_HFup/F");
+   outputTree->Branch("CalibReaderRewgt_HFdn",&CalibReaderRewgt_HFdn,"CalibReaderRewgt_HFdn/F");
+   outputTree->Branch("CalibReaderRewgt_LFstat1up",&CalibReaderRewgt_LFstat1up,"CalibReaderRewgt_LFstat1up/F");
+   outputTree->Branch("CalibReaderRewgt_LFstat1dn",&CalibReaderRewgt_LFstat1dn,"CalibReaderRewgt_LFstat1dn/F");
+   outputTree->Branch("CalibReaderRewgt_LFstat2up",&CalibReaderRewgt_LFstat2up,"CalibReaderRewgt_LFstat2up/F");
+   outputTree->Branch("CalibReaderRewgt_LFstat2dn",&CalibReaderRewgt_LFstat2dn,"CalibReaderRewgt_LFstat2dn/F");
      
    //HOT tagger
    outputTree->Branch("topJet1Index_HOTTaggerCalc",&topJet1Index_HOTTaggerCalc);
@@ -470,10 +525,6 @@ void step1::Loop(TString inTreeName, TString outTreeName )
    outputTree->Branch("topJet3Index_HOTTaggerCalc",&topJet3Index_HOTTaggerCalc);
    outputTree->Branch("topNAK4_HOTTaggerCalc",&topNAK4_HOTTaggerCalc,"topNAK4_HOTTaggerCalc/I");
    outputTree->Branch("topNtops_HOTTaggerCalc",&topNtops_HOTTaggerCalc,"topNtops_HOTTaggerCalc/I");
-//    outputTree->Branch("topBestGenEnergy_HOTTaggerCalc",&topBestGenEnergy_HOTTaggerCalc);
-//    outputTree->Branch("topBestGenEta_HOTTaggerCalc",&topBestGenEta_HOTTaggerCalc);
-//    outputTree->Branch("topBestGenPhi_HOTTaggerCalc",&topBestGenPhi_HOTTaggerCalc);
-//    outputTree->Branch("topBestGenPt_HOTTaggerCalc",&topBestGenPt_HOTTaggerCalc);
    outputTree->Branch("topDRmax_HOTTaggerCalc",&topDRmax_HOTTaggerCalc);
    outputTree->Branch("topDThetaMax_HOTTaggerCalc",&topDThetaMax_HOTTaggerCalc);
    outputTree->Branch("topDThetaMin_HOTTaggerCalc",&topDThetaMin_HOTTaggerCalc);
@@ -488,15 +539,6 @@ void step1::Loop(TString inTreeName, TString outTreeName )
    outputTree->Branch("NresolvedTops2pFake",&NresolvedTops2pFake,"NresolvedTops2pFake/I");
    outputTree->Branch("NresolvedTops5pFake",&NresolvedTops5pFake,"NresolvedTops5pFake/I");
    outputTree->Branch("NresolvedTops10pFake",&NresolvedTops10pFake,"NresolvedTops10pFake/I");
-
-   outputTree->Branch("isHTgt500Njetge9",&isHTgt500Njetge9,"isHTgt500Njetge9/I");
-   outputTree->Branch("BJetLeadPt",&BJetLeadPt,"BJetLeadPt/F");
-   outputTree->Branch("BJetLeadPt_bSFup",&BJetLeadPt_bSFup,"BJetLeadPt_bSFup/F");
-   outputTree->Branch("BJetLeadPt_bSFdn",&BJetLeadPt_bSFdn,"BJetLeadPt_bSFdn/F");
-   outputTree->Branch("BJetLeadPt_lSFup",&BJetLeadPt_lSFup,"BJetLeadPt_lSFup/F");
-   outputTree->Branch("BJetLeadPt_lSFdn",&BJetLeadPt_lSFdn,"BJetLeadPt_lSFdn/F");
-   outputTree->Branch("WJetLeadPt",&WJetLeadPt,"WJetLeadPt/F");
-   outputTree->Branch("TJetLeadPt",&TJetLeadPt,"TJetLeadPt/F");     
   
   // ----------------------------------------------------------------------------
   // Define and initialize objects / cuts / efficiencies
@@ -577,99 +619,10 @@ void step1::Loop(TString inTreeName, TString outTreeName )
    std::vector<float> ptRangeTpTp, ptRangeTTbar;
    float ptminTTbar[12] = {175,200,250,300,350,400,450,500,550,600,700,800};
    for (int i=0;i<12;++i) ptRangeTTbar.push_back(ptminTTbar[i]);
-   float ptminTpTp[14] = {175,200,250,300,350,400,450,500,550,600,700,800,1000,1200};
-   for (int i=0;i<14;++i) ptRangeTpTp.push_back(ptminTpTp[i]);
 
    std::vector<std::vector<float>> SignalEff;
    std::vector<std::vector<float>> SignalEffPuppi;
-   if(isTpTp){
-     SignalEffPuppi = {//TpTp
-       {1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000},//700
-       {0.626, 0.911, 0.936, 0.930, 0.925, 0.920, 0.914, 0.915, 0.909, 0.907, 0.898, 0.890, 0.878, 0.866},
-       {0.622, 0.914, 0.940, 0.932, 0.925, 0.919, 0.914, 0.907, 0.908, 0.905, 0.899, 0.888, 0.878, 0.859},
-       {0.619, 0.914, 0.938, 0.930, 0.927, 0.920, 0.918, 0.914, 0.908, 0.899, 0.900, 0.888, 0.884, 0.862},
-       {0.618, 0.911, 0.937, 0.930, 0.925, 0.920, 0.918, 0.918, 0.910, 0.906, 0.899, 0.886, 0.872, 0.877},
-       {0.637, 0.911, 0.943, 0.931, 0.922, 0.920, 0.918, 0.912, 0.906, 0.905, 0.898, 0.892, 0.877, 0.868},
-       {0.621, 0.909, 0.938, 0.930, 0.927, 0.923, 0.916, 0.912, 0.912, 0.904, 0.901, 0.891, 0.881, 0.873},
-       {0.641, 0.918, 0.935, 0.937, 0.924, 0.926, 0.917, 0.916, 0.914, 0.908, 0.903, 0.892, 0.884, 0.872},
-       {0.606, 0.917, 0.940, 0.936, 0.925, 0.925, 0.916, 0.915, 0.911, 0.910, 0.903, 0.895, 0.883, 0.876},
-       {0.650, 0.920, 0.935, 0.932, 0.929, 0.919, 0.918, 0.912, 0.911, 0.908, 0.900, 0.896, 0.887, 0.876},
-       {0.615, 0.915, 0.940, 0.934, 0.925, 0.921, 0.918, 0.912, 0.909, 0.910, 0.902, 0.895, 0.887, 0.872},
-       {0.627, 0.915, 0.938, 0.934, 0.929, 0.916, 0.912, 0.912, 0.911, 0.906, 0.901, 0.898, 0.887, 0.879},
-     };
-     SignalEff = {
-       {1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000},//700
-       {0.491, 0.892, 0.935, 0.926, 0.915, 0.908, 0.899, 0.902, 0.893, 0.889, 0.873, 0.866, 0.839, 0.831},
-       {0.484, 0.894, 0.937, 0.927, 0.915, 0.907, 0.902, 0.891, 0.892, 0.885, 0.877, 0.864, 0.839, 0.823},
-       {0.490, 0.893, 0.936, 0.923, 0.918, 0.909, 0.904, 0.897, 0.887, 0.885, 0.882, 0.864, 0.854, 0.821},
-       {0.463, 0.888, 0.936, 0.924, 0.916, 0.909, 0.908, 0.901, 0.895, 0.887, 0.875, 0.862, 0.841, 0.834},
-       {0.491, 0.891, 0.937, 0.925, 0.914, 0.911, 0.903, 0.897, 0.889, 0.888, 0.876, 0.865, 0.846, 0.830},
-       {0.481, 0.885, 0.932, 0.925, 0.915, 0.908, 0.903, 0.899, 0.893, 0.886, 0.879, 0.864, 0.852, 0.834},
-       {0.489, 0.892, 0.933, 0.924, 0.914, 0.912, 0.907, 0.900, 0.897, 0.888, 0.879, 0.864, 0.849, 0.835},
-       {0.468, 0.888, 0.928, 0.930, 0.917, 0.910, 0.901, 0.898, 0.894, 0.888, 0.879, 0.869, 0.851, 0.837},
-       {0.487, 0.893, 0.930, 0.922, 0.915, 0.902, 0.901, 0.894, 0.894, 0.886, 0.877, 0.869, 0.853, 0.836},
-       {0.461, 0.887, 0.931, 0.921, 0.910, 0.906, 0.900, 0.896, 0.891, 0.889, 0.878, 0.867, 0.854, 0.833},
-       {0.461, 0.893, 0.929, 0.927, 0.912, 0.901, 0.895, 0.888, 0.892, 0.886, 0.877, 0.869, 0.851, 0.839},
-     };
-   }else if(isBpBp){
-     SignalEffPuppi = {//BpBp
-       {1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000},//700
-       {0.616, 0.919, 0.940, 0.933, 0.933, 0.924, 0.915, 0.915, 0.909, 0.903, 0.892, 0.871, 0.831, 0.795},
-       {0.604, 0.919, 0.944, 0.937, 0.928, 0.926, 0.921, 0.916, 0.912, 0.909, 0.894, 0.876, 0.858, 0.830},
-       {0.633, 0.915, 0.944, 0.935, 0.932, 0.930, 0.919, 0.917, 0.912, 0.905, 0.902, 0.890, 0.863, 0.839},
-       {0.619, 0.918, 0.944, 0.938, 0.933, 0.927, 0.926, 0.919, 0.916, 0.909, 0.899, 0.893, 0.869, 0.856},
-       {0.600, 0.914, 0.943, 0.937, 0.932, 0.927, 0.925, 0.918, 0.917, 0.914, 0.906, 0.892, 0.880, 0.857},
-       {0.613, 0.912, 0.943, 0.940, 0.934, 0.925, 0.923, 0.920, 0.918, 0.914, 0.909, 0.897, 0.888, 0.864},
-       {0.610, 0.919, 0.944, 0.938, 0.933, 0.927, 0.927, 0.921, 0.920, 0.913, 0.908, 0.900, 0.882, 0.873},
-       {0.626, 0.911, 0.959, 0.935, 0.936, 0.929, 0.927, 0.922, 0.915, 0.911, 0.903, 0.902, 0.882, 0.870},
-       {0.619, 0.925, 0.943, 0.941, 0.936, 0.927, 0.927, 0.920, 0.920, 0.914, 0.909, 0.900, 0.890, 0.880},
-       {0.653, 0.924, 0.945, 0.934, 0.932, 0.934, 0.925, 0.923, 0.918, 0.912, 0.911, 0.901, 0.889, 0.877},
-       {0.629, 0.924, 0.944, 0.945, 0.928, 0.929, 0.924, 0.923, 0.918, 0.915, 0.911, 0.902, 0.888, 0.886},
-     };
-     SignalEff = {
-       {1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000},//700
-       {0.481, 0.894, 0.938, 0.927, 0.921, 0.914, 0.901, 0.900, 0.890, 0.885, 0.870, 0.846, 0.785, 0.789},
-       {0.470, 0.896, 0.940, 0.930, 0.917, 0.913, 0.904, 0.900, 0.896, 0.887, 0.874, 0.848, 0.823, 0.783},
-       {0.500, 0.898, 0.940, 0.927, 0.921, 0.917, 0.906, 0.900, 0.894, 0.885, 0.882, 0.863, 0.836, 0.789},
-       {0.464, 0.888, 0.937, 0.929, 0.919, 0.912, 0.913, 0.904, 0.898, 0.890, 0.880, 0.864, 0.834, 0.819},
-       {0.456, 0.886, 0.942, 0.927, 0.922, 0.912, 0.909, 0.906, 0.896, 0.894, 0.883, 0.866, 0.848, 0.810},
-       {0.472, 0.891, 0.937, 0.929, 0.923, 0.913, 0.911, 0.903, 0.900, 0.894, 0.886, 0.869, 0.853, 0.822},
-       {0.467, 0.892, 0.940, 0.928, 0.918, 0.911, 0.911, 0.908, 0.903, 0.893, 0.885, 0.874, 0.850, 0.834},
-       {0.476, 0.880, 0.941, 0.923, 0.918, 0.912, 0.903, 0.906, 0.895, 0.889, 0.881, 0.871, 0.846, 0.834},
-       {0.472, 0.892, 0.936, 0.924, 0.917, 0.910, 0.908, 0.904, 0.898, 0.892, 0.885, 0.874, 0.858, 0.839},
-       {0.473, 0.889, 0.939, 0.926, 0.917, 0.911, 0.908, 0.899, 0.900, 0.891, 0.887, 0.875, 0.860, 0.835},
-       {0.471, 0.888, 0.939, 0.929, 0.914, 0.914, 0.902, 0.899, 0.900, 0.894, 0.886, 0.873, 0.854, 0.846},
-     };
-   }else if(isXX){
-     SignalEffPuppi = {
-       {0.619, 0.915, 0.940, 0.936, 0.931, 0.928, 0.926, 0.916, 0.914, 0.906, 0.890, 0.864, 0.816, 0.772},
-       {0.629, 0.920, 0.946, 0.939, 0.932, 0.931, 0.927, 0.925, 0.918, 0.914, 0.899, 0.878, 0.868, 0.833},
-       {0.629, 0.917, 0.945, 0.939, 0.937, 0.933, 0.929, 0.924, 0.915, 0.916, 0.905, 0.889, 0.869, 0.839},
-       {0.626, 0.919, 0.943, 0.939, 0.935, 0.935, 0.930, 0.927, 0.926, 0.917, 0.915, 0.899, 0.883, 0.869},
-       {0.638, 0.919, 0.945, 0.940, 0.936, 0.936, 0.932, 0.928, 0.923, 0.922, 0.913, 0.904, 0.890, 0.870},
-       {0.619, 0.916, 0.946, 0.939, 0.937, 0.934, 0.935, 0.931, 0.927, 0.920, 0.916, 0.905, 0.900, 0.872},
-       {0.619, 0.915, 0.948, 0.943, 0.938, 0.932, 0.935, 0.931, 0.927, 0.923, 0.917, 0.907, 0.895, 0.872},
-       {0.625, 0.920, 0.944, 0.941, 0.939, 0.937, 0.932, 0.933, 0.927, 0.925, 0.918, 0.909, 0.897, 0.884},
-       {0.653, 0.922, 0.950, 0.942, 0.936, 0.936, 0.933, 0.932, 0.929, 0.925, 0.919, 0.914, 0.897, 0.883},
-       {0.651, 0.924, 0.944, 0.939, 0.937, 0.935, 0.934, 0.930, 0.928, 0.927, 0.920, 0.913, 0.899, 0.890},
-       {1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000},//1700
-       {1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000},//1800
-     };     
-     SignalEff = {//X53X53
-       {0.496, 0.895, 0.942, 0.933, 0.926, 0.922, 0.916, 0.908, 0.900, 0.889, 0.874, 0.844, 0.802, 0.759},
-       {0.498, 0.900, 0.945, 0.936, 0.928, 0.927, 0.919, 0.917, 0.905, 0.902, 0.883, 0.860, 0.845, 0.790},
-       {0.498, 0.896, 0.945, 0.936, 0.929, 0.927, 0.919, 0.916, 0.906, 0.903, 0.890, 0.868, 0.845, 0.792},
-       {0.491, 0.893, 0.944, 0.936, 0.932, 0.927, 0.922, 0.918, 0.916, 0.903, 0.897, 0.883, 0.854, 0.831},
-       {0.488, 0.893, 0.943, 0.936, 0.930, 0.930, 0.924, 0.919, 0.915, 0.911, 0.900, 0.886, 0.864, 0.832},
-       {0.461, 0.890, 0.943, 0.935, 0.928, 0.926, 0.924, 0.918, 0.914, 0.906, 0.899, 0.884, 0.871, 0.840},
-       {0.480, 0.893, 0.939, 0.940, 0.928, 0.927, 0.923, 0.921, 0.914, 0.910, 0.899, 0.888, 0.869, 0.841},
-       {0.475, 0.897, 0.939, 0.935, 0.928, 0.927, 0.922, 0.920, 0.914, 0.912, 0.902, 0.891, 0.873, 0.850},
-       {0.510, 0.894, 0.943, 0.936, 0.927, 0.928, 0.919, 0.922, 0.914, 0.909, 0.903, 0.894, 0.870, 0.851},
-       {0.479, 0.899, 0.939, 0.931, 0.925, 0.925, 0.922, 0.917, 0.918, 0.911, 0.900, 0.891, 0.873, 0.858},
-       {1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000},//1700
-       {1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000},//1800
-     };
-   }
+   
    float TTbarEff[12] = {0.468, 0.882, 0.941, 0.928, 0.915, 0.903, 0.892, 0.878, 0.868, 0.853, 0.828, 0.796};
    float STtEff[12] = {0.437, 0.876, 0.941, 0.927, 0.914, 0.900, 0.890, 0.855, 0.864, 0.842, 0.827, 0.849};
    float STtWEff[12] = {0.453, 0.885, 0.948, 0.938, 0.930, 0.927, 0.921, 0.916, 0.920, 0.910, 0.895, 0.875};
@@ -688,19 +641,6 @@ void step1::Loop(TString inTreeName, TString outTreeName )
    for (int i=0;i<9;++i) ptRangeTpTpTop.push_back(ptminTpTpTop[i]);
    float TTbarEffTop[9] = {0.710731908673,0.911246812099,0.946258231276,0.950948087531,0.952308954524,0.947643078335,0.94133549608,0.929334428924,0.924661246612};
    float STEffTop[9] = {0.691643703728,0.906228313671,0.941468696261,0.948002294016,0.947021636542,0.941775836972,0.933049300061,0.936046511628,0.933862433862};
-
-   float SignalEffTop[10][9] = {//X53X53
-     {0.724620303757,0.899211846191,0.936291859515,0.944579091937,0.94692371772,0.945789586458,0.935492651062,0.913173652695,0.90977443609},
-     {0.720768101761,0.907892004154,0.937210055022,0.945094294581,0.944494920294,0.941136208077,0.93661971831,0.924356223176,0.930051813472},
-     {0.724299065421,0.904784643301,0.937938576506,0.940539456533,0.944067043362,0.943750614613,0.939160329201,0.925230671333,0.920143884892},
-     {0.723555888972,0.891038887845,0.93702487906,0.943868050013,0.9433296466,0.941325202647,0.933387610095,0.930462184874,0.920435510888},
-     {0.706017891027,0.891839315242,0.929181103693,0.945251210149,0.946220930233,0.943065231159,0.936117240989,0.930840845279,0.918595371109},
-     {0.706572416905,0.885974797664,0.923103809857,0.938941876579,0.943281477238,0.942451135188,0.935289623871,0.926310160428,0.918116871222},
-     {0.703368526898,0.873433303491,0.920978890342,0.936481121716,0.942840429532,0.941648216482,0.935452396142,0.926339285714,0.913049112349},
-     {0.687741686002,0.876234529316,0.917185109638,0.93502800517,0.93907257226,0.941280976676,0.929876038507,0.923884514436,0.91489965922},
-     {0.675073181716,0.87130710477,0.909954158481,0.928911723494,0.937305146274,0.940579646213,0.932647997164,0.921526157947,0.91551008728},
-     {0.679444301518,0.863857374392,0.909068746953,0.920785999386,0.932639746077,0.937310063385,0.933625327818,0.923361250175,0.914409413854}
-     };
 
    std::vector<float> ptRangeTopTagginSF;
    float ptminTopTagginSF[5] = {300,400,480,600,1100};
@@ -752,8 +692,8 @@ void step1::Loop(TString inTreeName, TString outTreeName )
       double genHT = 0;
       int Ngenjet = 0;
       for(unsigned int ijet=0; ijet < genJetPtNoClean_MultiLepCalc->size(); ijet++){
-	if(genJetPtNoClean_MultiLepCalc->at(ijet) > 30) Ngenjet+=1;
-	if(genJetPtNoClean_MultiLepCalc->at(ijet) > 30 && fabs(genJetEtaNoClean_MultiLepCalc->at(ijet)) < 2.4) genHT+=genJetPtNoClean_MultiLepCalc->at(ijet);
+        if(genJetPtNoClean_MultiLepCalc->at(ijet) > 30) Ngenjet+=1;
+        if(genJetPtNoClean_MultiLepCalc->at(ijet) > 30 && fabs(genJetEtaNoClean_MultiLepCalc->at(ijet)) < 2.4) genHT+=genJetPtNoClean_MultiLepCalc->at(ijet);
       }
       if(genHT>500 && Ngenjet>=9) {isHTgt500Njetge9 = 1;}
       }
@@ -813,17 +753,9 @@ void step1::Loop(TString inTreeName, TString outTreeName )
       isoSF = 1.0;
       if(isMC){ //MC triggers check
 	if(isElectron){
-	  std::string string_a = "Ele15_IsoVVVL_PFHT450";
-	  std::string string_b = "Ele15_IsoVVVL_PFHT450_PFMET50";
-	  std::string string_c = "Ele50_IsoVVVL_PFHT450";
-	  std::string string_d = "Ele15_IsoVVVL_PFHT600";
-	  std::string string_ORa = "Ele35_WPTight_Gsf";
-	  std::string string_ORb = "Ele38_WPTight_Gsf";
+	  std::string string_ORa = "Ele28_eta2p1_WPTight_Gsf_HT150";
+	  std::string string_ORb = "Ele35_WPTight_Gsf";
 	  for(unsigned int itrig=0; itrig < vsSelMCTriggersEl_MultiLepCalc->size(); itrig++){
-	    if(vsSelMCTriggersEl_MultiLepCalc->at(itrig).find(string_a) != std::string::npos && viSelMCTriggersEl_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
-	    // if(vsSelMCTriggersEl_MultiLepCalc->at(itrig).find(string_b) != std::string::npos && viSelMCTriggersEl_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
-            if(vsSelMCTriggersEl_MultiLepCalc->at(itrig).find(string_c) != std::string::npos && viSelMCTriggersEl_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
-            if(vsSelMCTriggersEl_MultiLepCalc->at(itrig).find(string_d) != std::string::npos && viSelMCTriggersEl_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
 	    if(vsSelMCTriggersEl_MultiLepCalc->at(itrig).find(string_ORa) != std::string::npos && viSelMCTriggersEl_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
 	    if(vsSelMCTriggersEl_MultiLepCalc->at(itrig).find(string_ORb) != std::string::npos && viSelMCTriggersEl_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
 	  }
@@ -1019,21 +951,12 @@ void step1::Loop(TString inTreeName, TString outTreeName )
 	  triggerSF = (4.823*trigSFB + 36.734*trigSFCDEF)/41.557;
 	}
 	if(isMuon){
-	  std::string string_a = "Mu15_IsoVVVL_PFHT450";
-	  std::string string_b = "Mu15_IsoVVVL_PFHT450_PFMET50";
-	  std::string string_d = "Mu50_IsoVVVL_PFHT450";
-	  std::string string_e = "Mu15_IsoVVVL_PFHT600";
-	  std::string string_ORb = "Mu50";
-	  std::string string_ORc = "TkMu50";
+	  std::string string_ORb = "IsoMu24";
+	  std::string string_ORc = "Mu50";
 	  for(unsigned int itrig=0; itrig < vsSelMCTriggersMu_MultiLepCalc->size(); itrig++){
-	    if(vsSelMCTriggersMu_MultiLepCalc->at(itrig).find(string_a) != std::string::npos && viSelMCTriggersMu_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
-	    // if(vsSelMCTriggersMu_MultiLepCalc->at(itrig).find(string_b) != std::string::npos && viSelMCTriggersMu_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
-            if(vsSelMCTriggersMu_MultiLepCalc->at(itrig).find(string_d) != std::string::npos && viSelMCTriggersMu_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
-            if(vsSelMCTriggersMu_MultiLepCalc->at(itrig).find(string_e) != std::string::npos && viSelMCTriggersMu_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
 	    if(vsSelMCTriggersMu_MultiLepCalc->at(itrig).find(string_ORb) != std::string::npos && viSelMCTriggersMu_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
 	    if(vsSelMCTriggersMu_MultiLepCalc->at(itrig).find(string_ORc) != std::string::npos && viSelMCTriggersMu_MultiLepCalc->at(itrig) > 0) MCPastTrigger = 1;
-	  }
-	  // MiniIsoTight/Tight
+	  }	  // MiniIsoTight/Tight
 	  // https://wiwong.web.cern.ch/wiwong/Muon_Eff_Plots/2017_Efficiency20_miniTight_Tight_abseta/20_miniIsoTight_SF.json
 	  if(leppt < 30){
             if(fabs(lepeta) < 0.9) isoSF= 1.027698;
@@ -1238,17 +1161,9 @@ void step1::Loop(TString inTreeName, TString outTreeName )
 
       else{ //Data triggers check
 	if(isElectron){
-	  std::string string_a = "Ele15_IsoVVVL_PFHT450";
-	  std::string string_b = "Ele15_IsoVVVL_PFHT450_PFMET50";
-	  std::string string_c = "Ele50_IsoVVVL_PFHT450";
-	  std::string string_d = "Ele15_IsoVVVL_PFHT600";
-	  std::string string_ORa = "Ele35_WPTight_Gsf";
-	  std::string string_ORb = "Ele38_WPTight_Gsf";
+	  std::string string_ORa = "Ele28_eta2p1_WPTight_Gsf_HT150";
+	  std::string string_ORb = "Ele35_WPTight_Gsf";
 	  for(unsigned int itrig=0; itrig < vsSelTriggersEl_MultiLepCalc->size(); itrig++){
-	    if(vsSelTriggersEl_MultiLepCalc->at(itrig).find(string_a) != std::string::npos && viSelTriggersEl_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
-	    // if(vsSelTriggersEl_MultiLepCalc->at(itrig).find(string_b) != std::string::npos && viSelTriggersEl_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
-            if(vsSelTriggersEl_MultiLepCalc->at(itrig).find(string_c) != std::string::npos && viSelTriggersEl_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
-            if(vsSelTriggersEl_MultiLepCalc->at(itrig).find(string_d) != std::string::npos && viSelTriggersEl_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
 	    if(vsSelTriggersEl_MultiLepCalc->at(itrig).find(string_ORa) != std::string::npos && viSelTriggersEl_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
 	    if(vsSelTriggersEl_MultiLepCalc->at(itrig).find(string_ORb) != std::string::npos && viSelTriggersEl_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
 	  }
@@ -1257,22 +1172,13 @@ void step1::Loop(TString inTreeName, TString outTreeName )
 
 
 	if(isMuon){
-	  std::string string_a = "Mu15_IsoVVVL_PFHT450";
-	  std::string string_b = "Mu15_IsoVVVL_PFHT450_PFMET50";
-	  std::string string_d = "Mu50_IsoVVVL_PFHT450";
-	  std::string string_e = "Mu15_IsoVVVL_PFHT600";
+	  std::string string_ORa = "IsoMu24";
 	  std::string string_ORb = "Mu50";
-	  std::string string_ORc = "TkMu50";
 	  for(unsigned int itrig=0; itrig < vsSelTriggersMu_MultiLepCalc->size(); itrig++){
-	    if(vsSelTriggersMu_MultiLepCalc->at(itrig).find(string_a) != std::string::npos && viSelTriggersMu_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
-	    // if(vsSelTriggersMu_MultiLepCalc->at(itrig).find(string_b) != std::string::npos && viSelTriggersMu_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
-            if(vsSelTriggersMu_MultiLepCalc->at(itrig).find(string_d) != std::string::npos && viSelTriggersMu_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
-            if(vsSelTriggersMu_MultiLepCalc->at(itrig).find(string_e) != std::string::npos && viSelTriggersMu_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
+	    if(vsSelTriggersMu_MultiLepCalc->at(itrig).find(string_ORa) != std::string::npos && viSelTriggersMu_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
 	    if(vsSelTriggersMu_MultiLepCalc->at(itrig).find(string_ORb) != std::string::npos && viSelTriggersMu_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
-	    if(vsSelTriggersMu_MultiLepCalc->at(itrig).find(string_ORc) != std::string::npos && viSelTriggersMu_MultiLepCalc->at(itrig) > 0) DataPastTrigger = 1;
 	  }
-	}
-	MCPastTrigger = 1;
+	}	MCPastTrigger = 1;
       }
       
       if(isMC && MCPastTrigger) npass_trigger+=1;
@@ -1321,6 +1227,82 @@ void step1::Loop(TString inTreeName, TString outTreeName )
       AK4HT = 0;
       vector<pair<double,int>> jetptindpair;
 
+      CalibReaderRewgt = 1.0;
+      // only in JECup, JECdn samples
+      CalibReaderRewgt_JESup = 1.0;
+      CalibReaderRewgt_JESdn = 1.0;      
+      CalibReaderRewgt_JESAbsoluteMPFBiasup = 1.0;      
+      CalibReaderRewgt_JESAbsoluteMPFBiasdn = 1.0;      
+      CalibReaderRewgt_JESAbsoluteScaleup = 1.0;      
+      CalibReaderRewgt_JESAbsoluteScaledn = 1.0;      
+      CalibReaderRewgt_JESAbsoluteStatup = 1.0;      
+      CalibReaderRewgt_JESAbsoluteStatdn = 1.0;      
+      CalibReaderRewgt_JESFlavorQCDup = 1.0;      
+      CalibReaderRewgt_JESFlavorQCDdn = 1.0;      
+      CalibReaderRewgt_JESFragmentationup = 1.0;      
+      CalibReaderRewgt_JESFragmentationdn = 1.0;      
+      CalibReaderRewgt_JESPileUpDataMCup = 1.0;      
+      CalibReaderRewgt_JESPileUpDataMCdn = 1.0;      
+      CalibReaderRewgt_JESPileUpPtBBup = 1.0;      
+      CalibReaderRewgt_JESPileUpPtBBdn = 1.0;      
+      CalibReaderRewgt_JESPileUpPtEC1up = 1.0;      
+      CalibReaderRewgt_JESPileUpPtEC1dn = 1.0;      
+      CalibReaderRewgt_JESPileUpPtEC2up = 1.0;      
+      CalibReaderRewgt_JESPileUpPtEC2dn = 1.0;      
+      CalibReaderRewgt_JESPileUpPtHFup = 1.0;
+      CalibReaderRewgt_JESPileUpPtHFdn = 1.0;
+      CalibReaderRewgt_JESPileUpPtRefup = 1.0;
+      CalibReaderRewgt_JESPileUpPtRefdn = 1.0;
+      CalibReaderRewgt_JESRelativeBalup = 1.0;
+      CalibReaderRewgt_JESRelativeBaldn = 1.0;
+      CalibReaderRewgt_JESRelativeFSRup = 1.0;
+      CalibReaderRewgt_JESRelativeFSRdn = 1.0;
+      CalibReaderRewgt_JESRelativeJEREC1up = 1.0;
+      CalibReaderRewgt_JESRelativeJEREC1dn = 1.0;
+      CalibReaderRewgt_JESRelativeJEREC2up = 1.0;
+      CalibReaderRewgt_JESRelativeJEREC2dn = 1.0;
+      CalibReaderRewgt_JESRelativeJERHFup = 1.0;
+      CalibReaderRewgt_JESRelativeJERHFdn = 1.0;
+      CalibReaderRewgt_JESRelativePtBBup = 1.0;
+      CalibReaderRewgt_JESRelativePtBBdn = 1.0;
+      CalibReaderRewgt_JESRelativePtEC1up = 1.0;
+      CalibReaderRewgt_JESRelativePtEC1dn = 1.0;
+      CalibReaderRewgt_JESRelativePtEC2up = 1.0;
+      CalibReaderRewgt_JESRelativePtEC2dn = 1.0;
+      CalibReaderRewgt_JESRelativePtHFup = 1.0;
+      CalibReaderRewgt_JESRelativePtHFdn = 1.0;
+      CalibReaderRewgt_JESRelativeStatECup = 1.0;
+      CalibReaderRewgt_JESRelativeStatECdn = 1.0;
+      CalibReaderRewgt_JESRelativeStatFSRup = 1.0;
+      CalibReaderRewgt_JESRelativeStatFSRdn = 1.0;
+      CalibReaderRewgt_JESRelativeStatHFup = 1.0;
+      CalibReaderRewgt_JESRelativeStatHFdn = 1.0;
+      CalibReaderRewgt_JESSinglePionECALup = 1.0;
+      CalibReaderRewgt_JESSinglePionECALdn = 1.0;
+      CalibReaderRewgt_JESSinglePionHCALup = 1.0;
+      CalibReaderRewgt_JESSinglePionHCALdn = 1.0;
+      CalibReaderRewgt_JESTimePtEtaup = 1.0;
+      CalibReaderRewgt_JESTimePtEtadn = 1.0;            
+      
+      // b-flavor only
+      CalibReaderRewgt_LFup = 1.0;
+      CalibReaderRewgt_LFdn = 1.0;
+      CalibReaderRewgt_HFstat1up = 1.0;
+      CalibReaderRewgt_HFstat1dn = 1.0;
+      CalibReaderRewgt_HFstat2up = 1.0;
+      CalibReaderRewgt_HFstat2dn = 1.0;
+      // c-flavor only
+      CalibReaderRewgt_CFerr1up = 1.0;
+      CalibReaderRewgt_CFerr1dn = 1.0;
+      CalibReaderRewgt_CFerr2up = 1.0;
+      CalibReaderRewgt_CFerr2dn = 1.0;
+      // udsg-flavor only
+      CalibReaderRewgt_HFup = 1.0;
+      CalibReaderRewgt_HFdn = 1.0;
+      CalibReaderRewgt_LFstat1up = 1.0;
+      CalibReaderRewgt_LFstat1dn = 1.0;
+      CalibReaderRewgt_LFstat2up = 1.0;
+      CalibReaderRewgt_LFstat2dn = 1.0;
       for(unsigned int ijet=0; ijet < theJetPt_JetSubCalc->size(); ijet++){
 	// ----------------------------------------------------------------------------
 	// Basic cuts
@@ -1335,32 +1317,144 @@ void step1::Loop(TString inTreeName, TString outTreeName )
 	jetptindpair.push_back(std::make_pair(theJetPt_JetSubCalc->at(ijet),ijet));
 	NJets_JetSubCalc+=1;
 	AK4HT+=theJetPt_JetSubCalc->at(ijet);
+        if(isMC){
+          // ----------------------------------------------------------------------------
+          // Discriminator reweighting b-tagging Scale factor
+          // ----------------------------------------------------------------------------
+
+          int flav = theJetHFlav_JetSubCalc->at(ijet);
+          double ak4jetpt = theJetPt_JetSubCalc->at(ijet);
+          double jeteta = theJetEta_JetSubCalc->at(ijet);
+          double jetcsv = theJetDeepCSVb_JetSubCalc->at(ijet)+theJetDeepCSVbb_JetSubCalc->at(ijet);
+
+          BTagEntryForLJMet::JetFlavor jf;
+          if(abs(flav) == 5) jf = BTagEntryForLJMet::FLAV_B;
+          else if(abs(flav) == 4) jf = BTagEntryForLJMet::FLAV_C;
+          else jf = BTagEntryForLJMet::FLAV_UDSG;
+          if(isNOMshift){
+            CalibReaderRewgt *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+            if(abs(flav) == 5){
+              CalibReaderRewgt_LFup *= reader.eval_auto_bounds("up_lf",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFdn *= reader.eval_auto_bounds("down_lf",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat1up *= reader.eval_auto_bounds("up_hfstats1",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat1dn *= reader.eval_auto_bounds("down_hfstats1",jf,jeteta,ak4jetpt,jetcsv);
+              CalibReaderRewgt_HFstat2up *= reader.eval_auto_bounds("up_hfstats2",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat2dn *= reader.eval_auto_bounds("down_hfstats2",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr1up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr1dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr2up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv);
+              CalibReaderRewgt_CFerr2dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFup *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFdn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat1up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat1dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat2up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat2dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+            }else if(abs(flav) == 4){
+              CalibReaderRewgt_CFerr1up *= reader.eval_auto_bounds("up_cferr1",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr1dn *= reader.eval_auto_bounds("down_cferr1",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr2up *= reader.eval_auto_bounds("up_cferr2",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr2dn *= reader.eval_auto_bounds("down_cferr2",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFup *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFdn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat1up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat1dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat2up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat2dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFup *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFdn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat1up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat1dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat2up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat2dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+            }else{
+              CalibReaderRewgt_HFup *= reader.eval_auto_bounds("up_hf",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFdn *= reader.eval_auto_bounds("down_hf",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat1up *= reader.eval_auto_bounds("up_lfstats1",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat1dn *= reader.eval_auto_bounds("down_lfstats1",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat2up *= reader.eval_auto_bounds("up_lfstats2",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFstat2dn *= reader.eval_auto_bounds("down_lfstats2",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr1up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr1dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr2up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_CFerr2dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFup *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_LFdn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat1up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat1dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat2up *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+              CalibReaderRewgt_HFstat2dn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 
+            }
+          }else if(isJECshift){
+            if(jf!=1){            
+                CalibReaderRewgt_JESup                  *= reader.eval_auto_bounds("up_jes",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESdn                  *= reader.eval_auto_bounds("down_jes",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESAbsoluteMPFBiasup   *= reader.eval_auto_bounds("up_jesAbsoluteMPFBias",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESAbsoluteMPFBiasdn   *= reader.eval_auto_bounds("down_jesAbsoluteMPFBias",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESAbsoluteScaleup     *= reader.eval_auto_bounds("up_jesAbsoluteScale",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESAbsoluteScaledn     *= reader.eval_auto_bounds("down_jesAbsoluteScale",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESAbsoluteStatup      *= reader.eval_auto_bounds("up_jesAbsoluteStat",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESAbsoluteStatdn      *= reader.eval_auto_bounds("down_jesAbsoluteStat",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESFlavorQCDup         *= reader.eval_auto_bounds("up_jesFlavorQCD",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESFlavorQCDdn         *= reader.eval_auto_bounds("down_jesFlavorQCD",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESFragmentationup     *= reader.eval_auto_bounds("up_jesFragmentation",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESFragmentationdn     *= reader.eval_auto_bounds("down_jesFragmentation",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpDataMCup      *= reader.eval_auto_bounds("up_jesPileUpDataMC",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpDataMCdn      *= reader.eval_auto_bounds("down_jesPileUpDataMC",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtBBup        *= reader.eval_auto_bounds("up_jesPileUpPtBB",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtBBdn        *= reader.eval_auto_bounds("down_jesPileUpPtBB",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtEC1up       *= reader.eval_auto_bounds("up_jesPileUpPtEC1",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtEC1dn       *= reader.eval_auto_bounds("down_jesPileUpPtEC1",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtEC2up       *= reader.eval_auto_bounds("up_jesPileUpPtEC2",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtEC2dn       *= reader.eval_auto_bounds("down_jesPileUpPtEC2",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtHFup        *= reader.eval_auto_bounds("up_jesPileUpPtHF",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtHFdn        *= reader.eval_auto_bounds("down_jesPileUpPtHF",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtRefup       *= reader.eval_auto_bounds("up_jesPileUpPtRef",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESPileUpPtRefdn       *= reader.eval_auto_bounds("down_jesPileUpPtRef",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeBalup       *= reader.eval_auto_bounds("up_jesRelativeBal",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeBaldn       *= reader.eval_auto_bounds("down_jesRelativeBal",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeFSRup       *= reader.eval_auto_bounds("up_jesRelativeFSR",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeFSRdn       *= reader.eval_auto_bounds("down_jesRelativeFSR",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeJEREC1up    *= reader.eval_auto_bounds("up_jesRelativeJEREC1",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeJEREC1dn    *= reader.eval_auto_bounds("down_jesRelativeJEREC1",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeJEREC2up    *= reader.eval_auto_bounds("up_jesRelativeJEREC2",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeJEREC2dn    *= reader.eval_auto_bounds("down_jesRelativeJEREC2",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeJERHFup     *= reader.eval_auto_bounds("up_jesRelativeJERHF",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeJERHFdn     *= reader.eval_auto_bounds("down_jesRelativeJERHF",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativePtBBup      *= reader.eval_auto_bounds("up_jesRelativePtBB",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativePtBBdn      *= reader.eval_auto_bounds("down_jesRelativePtBB",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativePtEC1up     *= reader.eval_auto_bounds("up_jesRelativePtEC1",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativePtEC1dn     *= reader.eval_auto_bounds("down_jesRelativePtEC1",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativePtEC2up     *= reader.eval_auto_bounds("up_jesRelativePtEC2",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativePtEC2dn     *= reader.eval_auto_bounds("down_jesRelativePtEC2",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativePtHFup      *= reader.eval_auto_bounds("up_jesRelativePtHF",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativePtHFdn      *= reader.eval_auto_bounds("down_jesRelativePtHF",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeStatECup    *= reader.eval_auto_bounds("up_jesRelativeStatEC",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeStatECdn    *= reader.eval_auto_bounds("down_jesRelativeStatEC",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeStatFSRup   *= reader.eval_auto_bounds("up_jesRelativeStatFSR",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeStatFSRdn   *= reader.eval_auto_bounds("down_jesRelativeStatFSR",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeStatHFup    *= reader.eval_auto_bounds("up_jesRelativeStatHF",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESRelativeStatHFdn    *= reader.eval_auto_bounds("down_jesRelativeStatHF",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESSinglePionECALup    *= reader.eval_auto_bounds("up_jesSinglePionECAL",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESSinglePionECALdn    *= reader.eval_auto_bounds("down_jesSinglePionECAL",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESSinglePionHCALup    *= reader.eval_auto_bounds("up_jesSinglePionHCAL",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESSinglePionHCALdn    *= reader.eval_auto_bounds("down_jesSinglePionHCAL",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESTimePtEtaup         *= reader.eval_auto_bounds("up_jesTimePtEta",jf,jeteta,ak4jetpt,jetcsv); 
+                CalibReaderRewgt_JESTimePtEtadn         *= reader.eval_auto_bounds("down_jesTimePtEta",jf,jeteta,ak4jetpt,jetcsv); 
+            }
+            else if(jf==1){ /// In case of c-jet, give it central
+                CalibReaderRewgt_JESup *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv);
+                CalibReaderRewgt_JESdn *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv);
+            }
+            std::cout<<"jf : "<<jf<<"  jeteta : "<<jeteta<<"  ak4jetpt : "<<ak4jetpt<<"  jetcsv : "<<jetcsv<<std::endl;
+            std::cout<<"up_jes : "<<CalibReaderRewgt_JESup<<std::endl;
+            std::cout<<"down_jes : "<<CalibReaderRewgt_JESdn<<std::endl;	    
+            std::cout<<"##############################################################"<<std::endl;
+          }else if(isJERshift){
+                CalibReaderRewgt *= reader.eval_auto_bounds("central",jf,jeteta,ak4jetpt,jetcsv); 	        
+      
+          }       
       }
-
-
-      // ----------------------------------------------------------------------------
-      // Loop over AK8 jets for calculations and pt ordering pair
-      // ----------------------------------------------------------------------------
-
-      NJetsAK8_JetSubCalc = 0;
-      vector<pair<double,int>> jetak8ptindpair;      
-      for(unsigned int ijet=0; ijet < theJetAK8Pt_JetSubCalc->size(); ijet++){
-        // ----------------------------------------------------------------------------                                  
-        // Basic cuts                                                                                                    
-        // ----------------------------------------------------------------------------                                  
-	
-        if(fabs(theJetAK8Eta_JetSubCalc->at(ijet)) > ak8EtaCut) continue;
-        if(theJetAK8Pt_JetSubCalc->at(ijet) < ak8PtCut) continue;
-        if(theJetAK8NjettinessTau1_JetSubCalc->at(ijet)==0) continue;
-        if(theJetAK8NjettinessTau2_JetSubCalc->at(ijet)==0) continue;
-
-        // ----------------------------------------------------------------------------                                  
-        // Counter and pt ordering pair                                                                                  
-        // ----------------------------------------------------------------------------                                  
-	
-        NJetsAK8_JetSubCalc += 1;
-        jetak8ptindpair.push_back(std::make_pair(theJetAK8Pt_JetSubCalc->at(ijet),ijet));
-	
       }
  
       // ----------------------------------------------------------------------------
@@ -1370,9 +1464,6 @@ void step1::Loop(TString inTreeName, TString outTreeName )
       int isPastHTCut = 0;
       if(AK4HT >= htCut){npass_ht+=1;isPastHTCut=1;}
       
-      int isPastNAK8JetsCut = 0;
-      if(NJetsAK8_JetSubCalc >= nAK8jetsCut){npass_nAK8jets+=1;isPastNAK8JetsCut=1;}
-
       int isPastMETcut = 0;
       if(corr_met_MultiLepCalc > metCut){npass_met+=1;isPastMETcut=1;}
 
@@ -1393,7 +1484,7 @@ void step1::Loop(TString inTreeName, TString outTreeName )
       // Skip failing events
       // ----------------------------------------------------------------------------
             
-      if(!(isPastMETcut && isPastHTCut && isPastNAK8JetsCut && isPastNjetsCut && isPastLepPtCut && (isPastElEtaCut || isPastMuEtaCut))) continue;
+      if(!(isPastMETcut && isPastHTCut && isPastNjetsCut && isPastLepPtCut && (isPastElEtaCut || isPastMuEtaCut))) continue;
       npass_all+=1;
       
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1609,356 +1700,6 @@ void step1::Loop(TString inTreeName, TString outTreeName )
 	else{
 	  genAntiTopPt = allTopsPt_TTbarMassCalc->at(top1index);
 	  genTopPt = allTopsPt_TTbarMassCalc->at(top2index);
-	}
-      }
-
-      // ----------------------------------------------------------------------------
-      // Apply pt ordering to AK8 vectors 
-      // ----------------------------------------------------------------------------
-
-      //Pt ordering for AK8
-      std::sort(jetak8ptindpair.begin(), jetak8ptindpair.end(), comparepair);
-      
-      maxProb_JetSubCalc_PtOrdered.clear();
-      theJetAK8DoubleB_JetSubCalc_PtOrdered.clear();
-      theJetAK8SDSubjetNDeepCSVMSF_JetSubCalc_PtOrdered.clear();
-      theJetAK8SDSubjetNDeepCSVL_JetSubCalc_PtOrdered.clear();
-      theJetAK8SDSubjetIndex_JetSubCalc_PtOrdered.clear();
-      theJetAK8SDSubjetSize_JetSubCalc_PtOrdered.clear();
-      theJetAK8Pt_JetSubCalc_PtOrdered.clear();
-      theJetAK8Eta_JetSubCalc_PtOrdered.clear();
-      theJetAK8Phi_JetSubCalc_PtOrdered.clear();
-      theJetAK8Energy_JetSubCalc_PtOrdered.clear();
-      theJetAK8Mass_JetSubCalc_PtOrdered.clear();
-      theJetAK8CHSPrunedMass_JetSubCalc_PtOrdered.clear();
-      theJetAK8CHSSoftDropMass_JetSubCalc_PtOrdered.clear();
-      theJetAK8SoftDropRaw_JetSubCalc_PtOrdered.clear();
-      theJetAK8SoftDropCorr_JetSubCalc_PtOrdered.clear();
-      theJetAK8SoftDrop_JetSubCalc_PtOrdered.clear();
-      theJetAK8SoftDrop_JetSubCalc_JMRup_PtOrdered.clear();
-      theJetAK8SoftDrop_JetSubCalc_JMRdn_PtOrdered.clear();
-      theJetAK8SoftDrop_JetSubCalc_JMSup_PtOrdered.clear();
-      theJetAK8SoftDrop_JetSubCalc_JMSdn_PtOrdered.clear();
-      theJetAK8NjettinessTau1_JetSubCalc_PtOrdered.clear();
-      theJetAK8NjettinessTau2_JetSubCalc_PtOrdered.clear();
-      theJetAK8NjettinessTau3_JetSubCalc_PtOrdered.clear();
-      theJetAK8CHSTau1_JetSubCalc_PtOrdered.clear();
-      theJetAK8CHSTau2_JetSubCalc_PtOrdered.clear();
-      theJetAK8CHSTau3_JetSubCalc_PtOrdered.clear();
-      theJetAK8Indx_Wtagged.clear();
-      for(unsigned int ijet=0; ijet < jetak8ptindpair.size(); ijet++){
-      	maxProb_JetSubCalc_PtOrdered.push_back(maxProb_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8DoubleB_JetSubCalc_PtOrdered.push_back(theJetAK8DoubleB_JetSubCalc->at(jetak8ptindpair[ijet].second));
-	theJetAK8SDSubjetIndex_JetSubCalc_PtOrdered.push_back(theJetAK8SDSubjetIndex_JetSubCalc->at(jetak8ptindpair[ijet].second));
-	theJetAK8SDSubjetSize_JetSubCalc_PtOrdered.push_back(theJetAK8SDSubjetSize_JetSubCalc->at(jetak8ptindpair[ijet].second));
-	theJetAK8SDSubjetNDeepCSVMSF_JetSubCalc_PtOrdered.push_back(theJetAK8SDSubjetNDeepCSVMSF_JetSubCalc->at(jetak8ptindpair[ijet].second));
-	theJetAK8SDSubjetNDeepCSVL_JetSubCalc_PtOrdered.push_back(theJetAK8SDSubjetNDeepCSVL_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8Pt_JetSubCalc_PtOrdered.push_back(theJetAK8Pt_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8Eta_JetSubCalc_PtOrdered.push_back(theJetAK8Eta_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8Phi_JetSubCalc_PtOrdered.push_back(theJetAK8Phi_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8Energy_JetSubCalc_PtOrdered.push_back(theJetAK8Energy_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8Mass_JetSubCalc_PtOrdered.push_back(theJetAK8Mass_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8SoftDropRaw_JetSubCalc_PtOrdered.push_back(theJetAK8SoftDropRaw_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8SoftDropCorr_JetSubCalc_PtOrdered.push_back(theJetAK8SoftDropCorr_JetSubCalc->at(jetak8ptindpair[ijet].second));
-		theJetAK8SoftDrop_JetSubCalc_PtOrdered.push_back(theJetAK8SoftDrop_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8SoftDrop_JetSubCalc_JMRup_PtOrdered.push_back(theJetAK8SoftDrop_JMRup_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8SoftDrop_JetSubCalc_JMRdn_PtOrdered.push_back(theJetAK8SoftDrop_JMRdn_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8SoftDrop_JetSubCalc_JMSup_PtOrdered.push_back(theJetAK8SoftDrop_JMSup_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8SoftDrop_JetSubCalc_JMSdn_PtOrdered.push_back(theJetAK8SoftDrop_JMSdn_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8NjettinessTau1_JetSubCalc_PtOrdered.push_back(theJetAK8NjettinessTau1_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8NjettinessTau2_JetSubCalc_PtOrdered.push_back(theJetAK8NjettinessTau2_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8NjettinessTau3_JetSubCalc_PtOrdered.push_back(theJetAK8NjettinessTau3_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8CHSTau1_JetSubCalc_PtOrdered.push_back(theJetAK8CHSTau1_JetSubCalc->at(jetak8ptindpair[ijet].second));      	
-	theJetAK8CHSTau2_JetSubCalc_PtOrdered.push_back(theJetAK8CHSTau2_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      	theJetAK8CHSTau3_JetSubCalc_PtOrdered.push_back(theJetAK8CHSTau3_JetSubCalc->at(jetak8ptindpair[ijet].second));
-      }
-                        
-      // ----------------------------------------------------------------------------
-      // AK8 Jet - lepton associations, Top and W taggging
-      // ----------------------------------------------------------------------------
-
-      NJetsWtagged = 0;
-      NJetsTtagged = 0;
-      deltaR_lepAK8s.clear();
-      minDR_lepAK8 = 1000;
-      minDR_leadAK8otherAK8 = 1000;
-      if(theJetAK8Pt_JetSubCalc_PtOrdered.size() < 1) minDR_lepAK8 = -99.0;      
-      if(theJetAK8Pt_JetSubCalc_PtOrdered.size() < 2) minDR_leadAK8otherAK8 = -99.0;
-      WJetLeadPt = -99.0;
-      TJetLeadPt = -99.0;
-
-      theJetAK8Wmatch_JetSubCalc_PtOrdered.clear();
-      theJetAK8Tmatch_JetSubCalc_PtOrdered.clear();
-      theJetAK8MatchedPt_JetSubCalc_PtOrdered.clear();
-      theJetAK8Truth_JetSubCalc_PtOrdered.clear();
-      NJetsWtagged_shifts.clear();
-      NJetsTtagged_shifts.clear();
-
-      wjet1_lv.SetPtEtaPhiM(0,0,0,0);
-      tjet1_lv.SetPtEtaPhiM(0,0,0,0);
-      ak8_lv.SetPtEtaPhiM(0,0,0,0);
-      TLorentzVector leadak8;
-      leadak8.SetPtEtaPhiM(0,0,0,0);
-
-      for(int i = 0; i < 8; i++){
-	NJetsWtagged_shifts.push_back(0);
-	NJetsTtagged_shifts.push_back(0);
-      }
-      
-      for(unsigned int ijet=0; ijet < theJetAK8Pt_JetSubCalc_PtOrdered.size(); ijet++){
-
-	// ----------------------------------------------------------------------------
-	// AK8 - lepton and AK8 -- AK8 associations
-	// ----------------------------------------------------------------------------
-	
-	ak8_lv.SetPtEtaPhiE(theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet),theJetAK8Eta_JetSubCalc_PtOrdered.at(ijet),theJetAK8Phi_JetSubCalc_PtOrdered.at(ijet),theJetAK8Energy_JetSubCalc_PtOrdered.at(ijet));
-	if(ijet == 0) leadak8 = ak8_lv;
-
-	deltaR_lepAK8s.push_back(lepton_lv.DeltaR(ak8_lv));
-	if(lepton_lv.DeltaR(ak8_lv) < minDR_lepAK8){
-	  minDR_lepAK8 = lepton_lv.DeltaR(ak8_lv);
-	  ptRel_lepAK8 = lepton_lv.P()*(ak8_lv.Vect().Cross(lepton_lv.Vect()).Mag()/ak8_lv.P()/lepton_lv.P());
-	}
-	
-	if(ijet > 0){
-	  float tempdr = leadak8.DeltaR(ak8_lv);
-	  if(tempdr < minDR_leadAK8otherAK8){
-	    minDR_leadAK8otherAK8 = tempdr;
-	  }
-	}
-
-	// ----------------------------------------------------------------------------
-	// W & top tagging on MC
-	// ----------------------------------------------------------------------------
-	
-	float tau21WP = 0.45; //WP from https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetTopTagging#13_TeV_Working_Points_and_Scale
-	float tau32WP = 0.80; //WP5 from https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetTopTagging#13_TeV_Working_Points_and_Scale
-
-	float tau21 = theJetAK8NjettinessTau2_JetSubCalc_PtOrdered.at(ijet)/theJetAK8NjettinessTau1_JetSubCalc_PtOrdered.at(ijet);
-	float tau32 = theJetAK8NjettinessTau3_JetSubCalc_PtOrdered.at(ijet)/theJetAK8NjettinessTau2_JetSubCalc_PtOrdered.at(ijet);
-
-	float massSD = theJetAK8SoftDropCorr_JetSubCalc_PtOrdered.at(ijet);
-	float massSD_JMSup = theJetAK8SoftDrop_JetSubCalc_JMSup_PtOrdered.at(ijet);
-	float massSD_JMSdn = theJetAK8SoftDrop_JetSubCalc_JMSdn_PtOrdered.at(ijet);
-	float massSD_JMRup = theJetAK8SoftDrop_JetSubCalc_JMRup_PtOrdered.at(ijet);
-	float massSD_JMRdn = theJetAK8SoftDrop_JetSubCalc_JMRdn_PtOrdered.at(ijet);
-
-	// ------------------------------------------------------------------------------------------------------------------
-	// MC Calculation first
-	// ------------------------------------------------------------------------------------------------------------------
-
-	if(isMC){
-	  
-	  // ------------------------------------------------------------------------------------------------------------------
-	  // TRUTH MATCHING
-	  // ------------------------------------------------------------------------------------------------------------------
-	  float minDR = 1000;
-	  float matchedPt= -99;
-	  int matchedID = 0;
-	  bool isWmatched = false;
-	  bool isHmatched = false;
-	  bool isZmatched = false;
-	  bool isTmatched = false;
-	  bool isJmatched = false;
-	  bool isBmatched = false;
-	  TLorentzVector trueW,d1,d2,d3;
-
-	  for(unsigned int iW = 0; iW < HadronicVHtPt_JetSubCalc->size(); iW++){
-	    trueW.SetPtEtaPhiE(HadronicVHtPt_JetSubCalc->at(iW),HadronicVHtEta_JetSubCalc->at(iW),HadronicVHtPhi_JetSubCalc->at(iW),HadronicVHtEnergy_JetSubCalc->at(iW));
-
-	    if(ak8_lv.DeltaR(trueW) < minDR){
-	      minDR = ak8_lv.DeltaR(trueW);
-	      matchedPt = HadronicVHtPt_JetSubCalc->at(iW);
-	      matchedID = abs(HadronicVHtID_JetSubCalc->at(iW));	      
-	      d1.SetPtEtaPhiE(HadronicVHtD0Pt_JetSubCalc->at(iW),HadronicVHtD0Eta_JetSubCalc->at(iW),HadronicVHtD0Phi_JetSubCalc->at(iW),HadronicVHtD0E_JetSubCalc->at(iW));
-	      d2.SetPtEtaPhiE(HadronicVHtD1Pt_JetSubCalc->at(iW),HadronicVHtD1Eta_JetSubCalc->at(iW),HadronicVHtD1Phi_JetSubCalc->at(iW),HadronicVHtD1E_JetSubCalc->at(iW));
-	      d3.SetPtEtaPhiE(HadronicVHtD2Pt_JetSubCalc->at(iW),HadronicVHtD2Eta_JetSubCalc->at(iW),HadronicVHtD2Phi_JetSubCalc->at(iW),HadronicVHtD2E_JetSubCalc->at(iW));
-	    }
-   	  }	 
-	  
-	  bool WallDsInJet = false;
-	  bool TallDsInJet = false;
-	  if(matchedID != 6 && ak8_lv.DeltaR(d1) < 0.8 && ak8_lv.DeltaR(d2) < 0.8) WallDsInJet = true;
-	  if(matchedID == 6 && ak8_lv.DeltaR(d1) < 0.8 && ak8_lv.DeltaR(d2) < 0.8 && ak8_lv.DeltaR(d3) < 0.8) TallDsInJet = true;
-	  if(minDR < 0.8 && matchedID == 24 && WallDsInJet) isWmatched = true;
-	  if(minDR < 0.8 && matchedID == 25 && WallDsInJet) isHmatched = true;
-	  if(minDR < 0.8 && matchedID == 23 && WallDsInJet) isZmatched = true;
-	  if(minDR < 0.8 && matchedID == 6 && TallDsInJet) isTmatched = true;
-
-	  theJetAK8Wmatch_JetSubCalc_PtOrdered.push_back(isWmatched);
-	  theJetAK8Hmatch_JetSubCalc_PtOrdered.push_back(isHmatched);
-	  theJetAK8Zmatch_JetSubCalc_PtOrdered.push_back(isZmatched);
-	  theJetAK8Tmatch_JetSubCalc_PtOrdered.push_back(isTmatched);
-	  if(isWmatched || isZmatched || isHmatched || isTmatched) theJetAK8MatchedPt_JetSubCalc_PtOrdered.push_back(matchedPt);
-	  else theJetAK8MatchedPt_JetSubCalc_PtOrdered.push_back(-99.0);
-
-	  if (not (isWmatched && matchedPt > 200) && not (isZmatched && matchedPt > 200) && not (isTmatched && matchedPt > 400) && not (isHmatched && matchedPt > 300)) {
-	    int firstsub = theJetAK8SDSubjetIndex_JetSubCalc_PtOrdered.at(ijet);
-	    int nsubs = theJetAK8SDSubjetSize_JetSubCalc_PtOrdered.at(ijet);
-	    for(int isub = firstsub; isub < firstsub + nsubs; isub++){
-	      if( theJetAK8SDSubjetHFlav_JetSubCalc->at(isub) == 5 ) isBmatched = true;
-	    }
-	    if ( not isBmatched ) isJmatched = true;
-	  }
-
-	  if(isJmatched) theJetAK8Truth_JetSubCalc_PtOrdered.push_back(0);
-	  if(isTmatched && matchedPt > 400) theJetAK8Truth_JetSubCalc_PtOrdered.push_back(1);
-	  if(isHmatched && matchedPt > 300) theJetAK8Truth_JetSubCalc_PtOrdered.push_back(2);
-	  if(isZmatched && matchedPt > 200) theJetAK8Truth_JetSubCalc_PtOrdered.push_back(3);
-	  if(isWmatched && matchedPt > 200) theJetAK8Truth_JetSubCalc_PtOrdered.push_back(4);
-	  if(isBmatched) theJetAK8Truth_JetSubCalc_PtOrdered.push_back(5);
-
-	  // ------------------------------------------------------------------------------------------------------------------
-	  // TOP TAGGING
-	  // ------------------------------------------------------------------------------------------------------------------
-	  float tau32SF = 1.0;
-	  float tau32SFup = 1.0;
-	  float tau32SFdn = 1.0;
-	  double tau32eff = 1.0;
-	  if(isTmatched && matchedPt >= 400){	    
-	    // VALUES from the githup repository linked from https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetTopTagging#13_TeV_Working_Points_and_Scale
-	    int sfbin = (std::upper_bound(ptRangeTopTagginSF.begin(), ptRangeTopTagginSF.end(), matchedPt)-ptRangeTopTagginSF.begin())-1;
-	    //THESE ARE SET TO 1 SO AS TO NOT APPLY SF WHILE WAITING FOR EFFICIENCIES!!!!
-	    tau32SF = 1.0;//topTagginSF[sfbin];
-	    tau32SFup = 1.0;//topTagginSFup[sfbin];
-	    tau32SFdn = 1.0;//topTagginSFdn[sfbin];
-	    
-	    // Use matched T to find the efficiency -- calculated for TpTp and ttbar, EWK/QCD will almost never pass here (use ttbar eff when they do)
-	    if(isSig){
-	      int bin = (std::upper_bound(ptRangeTpTpTop.begin(), ptRangeTpTpTop.end(), matchedPt)-ptRangeTpTpTop.begin())-1;
-	      tau32eff = SignalEffTop[SigMass][bin];
-	    }else{
-	      int bin = (std::upper_bound(ptRangeTTbarTop.begin(), ptRangeTTbarTop.end(), matchedPt)-ptRangeTTbarTop.begin())-1;
-	      if(isTT) tau32eff = TTbarEffTop[bin]; // ttbar
-	      else if(isTTTT) tau32eff = TTbarEffTop[bin]; // using ttbar while TTTT is missing
-	      else tau32eff = STEffTop[bin]; // ST
-	    }
-	  }
-	  
-	  // Set the initial tagged/untagged state
-	  bool isTtagged = (massSD > 105) && (massSD < 220) && (tau32 < tau32WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 400);
-	  bool isTtagged_JMSup = (massSD_JMSup > 105) && (massSD_JMSup < 220) && (tau32 < tau32WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 400);
-	  bool isTtagged_JMSdn = (massSD_JMSdn > 105) && (massSD_JMSdn < 220) && (tau32 < tau32WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 400);
-	  bool isTtagged_JMRup = (massSD_JMRup > 105) && (massSD_JMRup < 220) && (tau32 < tau32WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 400);
-	  bool isTtagged_JMRdn = (massSD_JMRdn > 105) && (massSD_JMRdn < 220) && (tau32 < tau32WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 400);
-
-	  // IF THE JET IS NOT TRUTH-MATCHED, THESE IFS WILL DO NOTHING, SF == 1
-	  int tag_top = applySF(isTtagged,tau32SF,tau32eff);
-	  int tag_top_tau32up = applySF(isTtagged,tau32SFup,tau32eff);
-	  int tag_top_tau32dn = applySF(isTtagged,tau32SFdn,tau32eff);
-	  int tag_top_JMSup = applySF(isTtagged_JMSup,tau32SF,tau32eff);
-	  int tag_top_JMSdn = applySF(isTtagged_JMSdn,tau32SF,tau32eff);
-	  int tag_top_JMRup = applySF(isTtagged_JMRup,tau32SF,tau32eff);
-	  int tag_top_JMRdn = applySF(isTtagged_JMRdn,tau32SF,tau32eff);
- 
-	  // Now increase the tag count in the right variable	  
-	  NJetsTtagged += tag_top;
-	  NJetsTtagged_shifts[0] += tag_top_tau32up;
-	  NJetsTtagged_shifts[1] += tag_top_tau32dn;
-	  NJetsTtagged_shifts[2] += tag_top_JMSup;
-	  NJetsTtagged_shifts[3] += tag_top_JMSdn;
-	  NJetsTtagged_shifts[4] += tag_top_JMRup;
-	  NJetsTtagged_shifts[5] += tag_top_JMRdn;
-	  
-	  if(tag_top && theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) > TJetLeadPt){ TJetLeadPt = theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet); }
-
-	  // ------------------------------------------------------------------------------------------------------------------
-	  // W TAGGING
-	  // ------------------------------------------------------------------------------------------------------------------
-
-	  float tau21SF = 1.0;
-	  float tau21SFup = 1.0;
-	  float tau21SFdn = 1.0;
-	  float tau21ptSFup = 1.0;
-	  float tau21ptSFdn = 1.0;
-	  double tau21eff = 1.0;
-	  if(isWmatched && matchedPt >= 175 && massSD > 65 && massSD < 105 && theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 200){	    
-	    // VALUES from https://twiki.cern.ch/twiki/bin/view/CMS/JetWtagging#2017_scale_factors_and_correctio
-	    //THESE ARE SET TO 1 SO AS TO NOT APPLY SF WHILE WAITING FOR EFFICIENCIES!!!!
-	    tau21SF = 1.0;//0.97;
-	    tau21SFup = 1.0;//tau21SF+0.06;
-	    tau21SFdn = 1.0;//tau21SF-0.06;
-	    tau21ptSFup = 1.0;//tau21SF+0.041*log(theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet)/200);
-	    tau21ptSFdn = 1.0;//tau21SF-0.041*log(theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet)/200);
-	    
-	    // Use matched W to find the efficiency -- calculated for TpTp and ttbar, EWK/QCD will almost never pass here (use ttbar eff when they do)
-	    if(isSig){
-	      int bin = (std::upper_bound(ptRangeTpTp.begin(), ptRangeTpTp.end(), matchedPt)-ptRangeTpTp.begin())-1;
-	      tau21eff = SignalEffPuppi[SigMass][bin];
-	    }else{
-	      int bin = (std::upper_bound(ptRangeTTbar.begin(), ptRangeTTbar.end(), matchedPt)-ptRangeTTbar.begin())-1;
-	      if(isTT){
-		tau21eff = TTbarEffPuppi[bin]; // ttbar
-	      }
-	      else if(isTTTT){
-		tau21eff = TTbarEffPuppi[bin]; // using ttbar while TTTT is missing
-	      }
-	      else if(isSTt){
-		tau21eff = STtEffPuppi[bin]; // single top (s and t channel had 0 boosted tops)
-	      }
-	      else if(isSTtW){
-		tau21eff = STtWEffPuppi[bin]; // single top (s and t channel had 0 boosted tops)
-	      }
-	      else{
-		tau21eff = WVEffPuppi[bin]; // WW, WZ, etc. 
-	      }
-	    }
-	  }
-	  
-	  // Set the initial tagged/untagged state
-	  bool isWtagged = (massSD > 65) && (massSD < 105) && (tau21 < tau21WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 200);
-	  bool isWtagged_JMSup = (massSD_JMSup > 65) && (massSD_JMSup < 105) && (tau21 < tau21WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 200);
-	  bool isWtagged_JMSdn = (massSD_JMSdn > 65) && (massSD_JMSdn < 105) && (tau21 < tau21WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 200);
-	  bool isWtagged_JMRup = (massSD_JMRup > 65) && (massSD_JMRup < 105) && (tau21 < tau21WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 200);
-	  bool isWtagged_JMRdn = (massSD_JMRdn > 65) && (massSD_JMRdn < 105) && (tau21 < tau21WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 200);
-	  if(isWtagged) { theJetAK8Indx_Wtagged.push_back(ijet); }
- 
-	  // IF THE JET IS NOT TRUTH-MATCHED, THESE IFS WILL DO NOTHING, SF == 1
-	  int tag_W = applySF(isWtagged,tau21SF,tau21eff);
- 	  int tag_W_tau21up = applySF(isWtagged,tau21SFup,tau21eff);
-	  int tag_W_tau21dn = applySF(isWtagged,tau21SFdn,tau21eff);
-	  int tag_W_JMSup = applySF(isWtagged_JMSup,tau21SF,tau21eff);
-	  int tag_W_JMSdn = applySF(isWtagged_JMSdn,tau21SF,tau21eff);
-	  int tag_W_JMRup = applySF(isWtagged_JMRup,tau21SF,tau21eff);
-	  int tag_W_JMRdn = applySF(isWtagged_JMRdn,tau21SF,tau21eff);
- 	  int tag_W_tau21ptup = applySF(isWtagged,tau21ptSFup,tau21eff);
-	  int tag_W_tau21ptdn = applySF(isWtagged,tau21ptSFdn,tau21eff);
-	  
-	  // Now increase the tag count in the right variable	  
-	  NJetsWtagged += tag_W;
-	  NJetsWtagged_shifts[0] += tag_W_tau21up;
-	  NJetsWtagged_shifts[1] += tag_W_tau21dn;
-	  NJetsWtagged_shifts[2] += tag_W_JMSup;
-	  NJetsWtagged_shifts[3] += tag_W_JMSdn;
-	  NJetsWtagged_shifts[4] += tag_W_JMRup;
-	  NJetsWtagged_shifts[5] += tag_W_JMRdn;
-	  NJetsWtagged_shifts[6] += tag_W_tau21ptup;
-	  NJetsWtagged_shifts[7] += tag_W_tau21ptdn;
-
-	  if(tag_W && theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) > WJetLeadPt){ WJetLeadPt = theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet); }
-	  	  
-	//
-	}//end of isMC
-	// ------------------------------------------------------------------------------------------------------------------
-	// DATA Calculation second
-	// ------------------------------------------------------------------------------------------------------------------
-	else{
-	  theJetAK8Wmatch_JetSubCalc_PtOrdered.push_back(0);
-	  theJetAK8Tmatch_JetSubCalc_PtOrdered.push_back(0);
-	  
-	  bool isWtagged = (massSD > 65)  && (massSD < 105) && (tau21 < tau21WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 200);
-	  bool isTtagged = (massSD > 105) && (massSD < 220) && (tau32 < tau32WP) && (theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) >= 400);
-	  
-	  NJetsWtagged += isWtagged;
-	  NJetsTtagged += isTtagged;
-	  
-	  if(isWtagged){
-	    theJetAK8Indx_Wtagged.push_back(ijet);
-	    if(theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) > WJetLeadPt) { WJetLeadPt = theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet); }
-	  }
-	  else if(isTtagged){
-	    if(theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet) > TJetLeadPt) { TJetLeadPt = theJetAK8Pt_JetSubCalc_PtOrdered.at(ijet); }
-	  }
 	}
       }
 

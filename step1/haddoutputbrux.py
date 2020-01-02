@@ -8,62 +8,70 @@ start_time = time.time()
 # output = sys.argv[2]
 shift = sys.argv[1]
 
-inDir='/mnt/hadoop/store/group/bruxljm/FWLJMET102X_1lep2017_4t_081019_step1/'+shift+'/'
-outDir='/mnt/hadoop/store/group/bruxljm/FWLJMET102X_1lep2017_4t_081019_step1hadds/'+shift+'/'
+inDir='/mnt/hadoop/store/user/jblee/CHiggs2017/'+shift+'/'
+outDir='/mnt/hadoop/store/user/jblee/CHiggs2017/step1hadds/'+shift+'/'
 
 os.system('mkdir -p '+outDir)
 
 dirList = [
-'DYJetsToLL_M-50_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8',
-'DYJetsToLL_M-50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8',
-'DYJetsToLL_M-50_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8',
-'DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8',
-'DYJetsToLL_M-50_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8',
-'DYJetsToLL_M-50_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8',
-'QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8',
-'QCD_HT1500to2000_TuneCP5_13TeV-madgraph-pythia8',
-'QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8',
-'QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8',
-'QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8',
-'QCD_HT500to700_TuneCP5_13TeV-madgraph-pythia8',
-'QCD_HT700to1000_TuneCP5_13TeV-madgraph-pythia8',
-'ST_s-channel_antitop_leptonDecays_13TeV-PSweights_powheg-pythia',
-'ST_s-channel_top_leptonDecays_13TeV-PSweights_powheg-pythia',
-'ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8',
-'ST_t-channel_top_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8',
-'ST_tW_antitop_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8',
-'ST_tW_top_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8',
-# 'SingleElectron',
-# 'SingleMuon',
-'TTHH_TuneCP5_13TeV-madgraph-pythia8',
-'TTTJ_TuneCP5_13TeV-madgraph-pythia8',
-'TTTT_TuneCP5_13TeV-amcatnlo-pythia8',
-'TTTW_TuneCP5_13TeV-madgraph-pythia8',
-'TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'DYJetsToLL_M-50_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'DYJetsToLL_M-50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'DYJetsToLL_M-50_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'DYJetsToLL_M-50_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'DYJetsToLL_M-50_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'QCD_HT1000to1500_TuneCP5_13TeV-madgraph-pythia8',
+# 'QCD_HT1500to2000_TuneCP5_13TeV-madgraph-pythia8',
+# 'QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8',
+# 'QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8',
+# 'QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8',
+# 'QCD_HT500to700_TuneCP5_13TeV-madgraph-pythia8',
+# 'QCD_HT700to1000_TuneCP5_13TeV-madgraph-pythia8',
+# 'ST_s-channel_antitop_leptonDecays_13TeV-PSweights_powheg-pythia',
+# 'ST_s-channel_top_leptonDecays_13TeV-PSweights_powheg-pythia',
+# 'ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'ST_t-channel_top_4f_InclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'ST_tW_antitop_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'ST_tW_top_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# # 'SingleElectron',
+# # 'SingleMuon',
+# 'TTHH_TuneCP5_13TeV-madgraph-pythia8',
+# 'TTTJ_TuneCP5_13TeV-madgraph-pythia8',
+# 'TTTT_TuneCP5_13TeV-amcatnlo-pythia8',
+# 'TTTW_TuneCP5_13TeV-madgraph-pythia8',
+# 'TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'TTToSemiLepton_HT500Njet9_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'TTWH_TuneCP5_13TeV-madgraph-pythia8',
+# 'TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcatnloFXFX-madspin-pythia8',
+# 'TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8',
+# 'TTWW_TuneCP5_13TeV-madgraph-pythia8',
+# 'TTWZ_TuneCP5_13TeV-madgraph-pythia8',
+# 'TTZH_TuneCP5_13TeV-madgraph-pythia8',
+# 'TTZToLLNuNu_M-10_TuneCP5_PSweights_13TeV-amcatnlo-pythia8',
+# 'TTZZ_TuneCP5_13TeV-madgraph-pythia8',
+# 'TT_Mtt-1000toInf_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'TT_Mtt-700to1000_TuneCP5_PSweights_13TeV-powheg-pythia8',
+# 'WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'WJetsToLNu_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'WJetsToLNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'WJetsToLNu_HT-600To800_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8',
+# 'WW_TuneCP5_13TeV-pythia8',
+# 'WZ_TuneCP5_13TeV-pythia8',
+# 'ZZ_TuneCP5_13TeV-pythia8',
+# 'ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythia8',
+# 'ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8',
+
+# 'TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8',
 'TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8',
 'TTToSemiLepton_HT500Njet9_TuneCP5_PSweights_13TeV-powheg-pythia8',
 'TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8',
-'TTWH_TuneCP5_13TeV-madgraph-pythia8',
-'TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcatnloFXFX-madspin-pythia8',
-'TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8',
-'TTWW_TuneCP5_13TeV-madgraph-pythia8',
-'TTWZ_TuneCP5_13TeV-madgraph-pythia8',
-'TTZH_TuneCP5_13TeV-madgraph-pythia8',
-'TTZToLLNuNu_M-10_TuneCP5_PSweights_13TeV-amcatnlo-pythia8',
-'TTZZ_TuneCP5_13TeV-madgraph-pythia8',
 'TT_Mtt-1000toInf_TuneCP5_PSweights_13TeV-powheg-pythia8',
 'TT_Mtt-700to1000_TuneCP5_PSweights_13TeV-powheg-pythia8',
-'WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8',
-'WJetsToLNu_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8',
-'WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8',
-'WJetsToLNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8',
-'WJetsToLNu_HT-600To800_TuneCP5_13TeV-madgraphMLM-pythia8',
-'WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8',
-'WW_TuneCP5_13TeV-pythia8',
-'WZ_TuneCP5_13TeV-pythia8',
-'ZZ_TuneCP5_13TeV-pythia8',
-'ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythia8',
-'ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8',
+
 ]
 
 if shift=='nominalll':
@@ -72,9 +80,7 @@ if shift=='nominalll':
 
 for sample in dirList:
     outList = ['none']
-    if 'Tprime' in sample: outList = ['BWBW','TZBW','THBW','TZTH','TZTZ','THTH']
-    elif 'Bprime' in sample: outList = ['TWTW','BZTW','BHTW','BZBH','BZBZ','BHBH']
-    elif 'TTTo' in sample: outList = ['Mtt0to700','Mtt700to1000','Mtt1000toInf']
+    if 'TTTo' in sample: outList = ['Mtt0to700','Mtt700to1000','Mtt1000toInf']
 
     for outlabel in outList:
 
